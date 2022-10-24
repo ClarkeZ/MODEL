@@ -3,63 +3,88 @@
 
 #include "base.h"
 
-typedef struct Matrix
+typedef struct Matrix {
+    u64 *m;
+    u64 n;
+} Matrix;
+
+typedef struct QR {
+    Matrix *Q;
+    Matrix *R;
+} QR;
+
+Matrix *init_matrix(u64 n);
+
+Matrix *init_eye(u64 n);
+
+void free_matrix(Matrix *mat);
+
+void free_qr(QR *qr);
+
+void print_matrix(Matrix *mat);
+
+Matrix *copy_matrix(Matrix *M);
+
+Matrix *matrix_mul(Matrix *A, Matrix *B);
+
+Matrix *mult_matrix_scalar(Matrix *A, mpfr scalar);
+
+Matrix *matrix_add(Matrix *A, Matrix *B);
+
+Matrix *matrix_sub(Matrix *A, Matrix *B);
+
+Matrix *matrix_transpose(Matrix *A);
+
+Matrix *matrix_inverse(Matrix *A);
+
+Matrix *matrix_mul_coef(Matrix *A, u64 c);
+
+
+/* ===== Fonctions MPFR ===== */
+
+typedef struct MPFR_Matrix
 {
     mpfr *m;     // matrice  M
     mpfr n;      // Taille de la matrice, pour une matrice carree
-} Matrix;
+} MPFR_Matrix;
 
-typedef struct LU
+typedef struct MPFR_QR
 {
-    Matrix *L;
-    Matrix *U;
-} LU;
-
-typedef struct PLUQ
-{
-    Matrix *P;
-    Matrix *L;
-    Matrix *U;
-    Matrix *Q;
-} PLUQ;
+    MPFR_Matrix *Q;
+    MPFR_Matrix *R;
+} MPFR_QR;
 
 /* Initialise une matrice de taille n*n */
-Matrix *init_matrix(mpfr n);
+MPFR_Matrix *init_MPFR_matrix(mpfr n);
 
 /* Initialise une matrice identite de taille n*n */
-Matrix *init_eye(mpfr n);
+MPFR_Matrix *init_MPFR_eye(mpfr n);
 
 /* Libere la memoire */
-void free_matrix(Matrix *m);
+void free_MPFR_matrix(Matrix *m);
 
 /* Libere la memoire */
-void free_lu(LU *lu);
-
-/* Libere la memoire */
-void free_pluq(PLUQ* pluq);
+void free_MPFR_qr(QR *qr);
 
 /* Copie la matrice */
-Matrix *copy_matrix(Matrix *M);
+MPFR_Matrix *copy_MPFR_matrix(Matrix *M);
 
 /* Affiche la matrice */
-void print_matrix(Matrix *M);
+void print_MPFR_matrix(Matrix *M);
 
 /* Addition de deux matrices */
-Matrix *matrix_add(Matrix* A, Matrix* B);
+MPFR_Matrix *matrix_MPFR_add(Matrix* A, Matrix* B);
 
 /* Soustraction de deux matrices */
-Matrix *matrix_sub(Matrix* A, Matrix* B);
+MPFR_Matrix *matrix_MPFR_sub(Matrix* A, Matrix* B);
 
 /* Multiplication naive de deux matrices */
-Matrix *matrix_mul(Matrix *A, Matrix *B);
+MPFR_Matrix *matrix_MPFR_mul(Matrix *A, Matrix *B);
 
 /* Multiplication d'une matrice par un scalaire */
-Matrix *matrix_mul_coef(Matrix *A, mpfr c);
+MPFR_Matrix *matrix_mul_MPFR_coef(Matrix *A, mpfr c);
 
 /* Multiplication d'une matrice par un vecteur */
-mpfr *matrix_mul_vector(Matrix *A, mpfr *v);
-
-/* Transpose d'une matrice */
-Matrix *matrix_transpose(Matrix *A);
+mpfr *matrix_mul_MPFR_vector(Matrix *A, mpfr *v);
 
 #endif // matrix_H

@@ -7,8 +7,7 @@ Initialise une matrice carree de taille n et remplie de 0
 
 @return une matrice de coefficient initialise a 0 de taille n*n 
 */
-*/
-Matrix *init_matrix(mpfr n){
+Matrix *init_matrix(u64 n){
     Matrix *mat = malloc(sizeof(Matrix));
 
     if(mat == NULL){
@@ -17,7 +16,7 @@ Matrix *init_matrix(mpfr n){
     }
 
     mat->n = n;
-    mat->m = calloc(n*n,sizeof(mpfr));
+    mat->m = calloc(n*n,sizeof(u64));
 
     if(mat->m == NULL){
         printf("init_matrix : Erreur allocation mémoire Matrix !\n");
@@ -32,8 +31,7 @@ Initialise une matrice identite de taille n*n
 
 @return une matrice identite de taille n*n 
 */
-*/
-Matrix *init_eye(mpfr n) {
+Matrix *init_eye(u64 n) {
     unsigned int i;
     
     Matrix *mat = malloc(sizeof(Matrix));
@@ -44,7 +42,7 @@ Matrix *init_eye(mpfr n) {
     }
 
     mat->n = n;
-    mat->m = calloc(n*n,sizeof(mpfr));
+    mat->m = calloc(n*n,sizeof(u64));
 
     if(mat->m == NULL){
         printf("init_matrix : Erreur allocation mémoire Matrix !\n");
@@ -65,24 +63,14 @@ void free_matrix(Matrix *mat){
 }
 
 /*
-Libere la memoire allouee a une structure LU
+Libere la memoire allouee a une structure QR
 */
-void free_lu(LU *lu){
-    free_matrix(lu->L);
-    free_matrix(lu->U);
-    free(lu);
+void free_qr(QR *qr){
+    free_matrix(qr->Q);
+    free_matrix(qr->R);
+    free(qr);
 }
 
-/*
-Libere la memoire allouee a une structure PLUQ
-*/
-void free_pluq(PLUQ* pluq){
-    free_matrix(pluq->P);
-    free_matrix(pluq->L);
-    free_matrix(pluq->U);
-    free_matrix(pluq->Q);
-    free(pluq);
-}
 
 /*
 Copie une matrice dans une nouvelle matrice
@@ -93,7 +81,7 @@ Copie une matrice dans une nouvelle matrice
 Matrix *copy_matrix(Matrix *M){
     Matrix *copy = init_matrix(M->n);
 
-    memcpy(copy->m, M->m, sizeof(mpfr) * M->n * M->n);
+    memcpy(copy->m, M->m, sizeof(u64) * M->n * M->n);
 
     return copy;
 }
@@ -102,11 +90,11 @@ Matrix *copy_matrix(Matrix *M){
 Affiche une matrice
 @param M : la matrice a afficher
 */
-void print_matrix(Matrix *M){
+void print_matrix(Matrix *mat){
     unsigned int i, j;
-    for (i = 0; i < M->n; ++i) {
-        for (j = 0; j < M->n; ++j) {
-            printf("%d ", M->m[i*M->n+j]);
+    for (i = 0; i < mat->n; ++i) {
+        for (j = 0; j < mat->n; ++j) {
+            printf("%llu ", mat->m[i * mat->n + j]);
             // mpfr_out_str (stdout, 10, 0, M->m[i*M->n+j], MPFR_RNDD);
         }
         printf("\n");
@@ -126,7 +114,7 @@ Matrix *matrix_add(Matrix *A, Matrix *B){
     if(A->n == B->n){
         Matrix *mat_add = init_matrix(A->n);
         for (i = 0; i < A->n * A->n; ++i) {
-            mat_add->m[i] = mpadd(A->m[i], B->m[i]);
+            mat_add->m[i] = add(A->m[i], B->m[i]);
         }
         return mat_add;
     }
@@ -144,19 +132,17 @@ Soustrait deux matrices (A-B)
 @return la matrice A-B
 */
 Matrix *matrix_sub(Matrix *A, Matrix *B){
-    unsigned int i;
-
-    if(A->n == B->n){
-        Matrix *mat_sub = init_matrix(A->n);
-        for (i = 0; i < A->n * A->n; ++i) {
-            mat_sub->m[i] = mpsub(A->m[i], B->m[i]);
-        }
-        return mat_sub;
-    }
-    else{
-        printf("matrix.c/matrix_sub : Les matrices n'ont pas la meme taille !\n");
+    if (A->n != B->n) {
+        printf("Soustraction de matrice impossible, dimensions : %llu != %llu", A->n, B->n);
         return NULL;
     }
+    unsigned int i;
+
+    Matrix *mat_sub = init_matrix(A->n);
+        for (i = 0 ; i < A->n * A->n ; ++i) {
+            mat_sub->m[i] = sub(A->m[i], B->m[i]);
+        }
+        return mat_sub;  
 }
 
 /*
@@ -166,28 +152,45 @@ Multiplication naive de deux matrices (A*B)
 
 @return la matrice A*B
 */
-Matrix *matrix_mul(Matrix *A, Matrix *B){
+Matrix *matrix_mul(Matrix *A, Matrix *B) {
     unsigned int i, j, k;
 
-    if(A->n == B->n){
-        mpfr n = A->n;
-        Matrix *mat_mul = init_matrix(A->n);
-        for (i = 0; i < A->n; ++i) {
-            for (j = 0; j < A->n; ++j) {
-                for (k = 0; k < A->n; ++k) {
-                    mpfr x = mat_mul->m[i * n + j];
-                    mpfr y = A->m[i * n + k];
-                    mpfr z = B->m[k * n + j];
-                    mat_mul->m[i * n + j] = mpadd(x, mpmul(y, z));
+    if (A->n == B->n) {
+        u64 n = A->n;
+        Matrix *mat_mult = init_matrix(A->n);
+        for (i = 0 ; i < n ; i++)
+            for (j = 0 ; j < n ; j++)
+                for (k = 0 ; k < n ; k++) {
+                    u64 x = mat_mult->m[i * n + j];
+                    u64 y = A->m[k + n * i];
+                    u64 z = B->m[k * n + j];
+                    mat_mult->m[i * n + j] = add(x, mul(y, z));
                 }
-            }
-        }
-        return mat_mul;
+        return mat_mult;   
     }
-    else{
-        printf("matrix.c/matrix_mul : Les matrices n'ont pas la meme taille !\n");
+    else {
+        printf("Multiplication de matrice impossible, dimensions : %llu != %llu", A->n, B->n);
         return NULL;
     }
+}
+
+/*
+Multiplication d'une matrice par un coefficient A * c
+@param A : une matrice
+@param c : le coefficient 
+
+@return la matrice A + B
+*/
+Matrix *matrix_mul_coef(Matrix *A, u64 c){
+    unsigned int i, j;
+    Matrix *res = copy_matrix(A);
+
+    for(i = 0 ; i < A->n ; i++){
+        for(j = 0 ; j < A->n ; j++){
+            res->m[i*A->n + j] = mul(c, A->m[i*A->n + j]);
+        }
+    }
+    return res;
 }
 
 /*
@@ -197,17 +200,17 @@ Multiplication d'une matrice par un scalaire (A*c)
 
 @return la matrice A*c
 */
-Matrix *matrix_mul_scalar(Matrix *A, mpfr scalar){ 
-    unsigned int i, j;
-    Matrix *mat_mul = init_matrix(A->n);
+// Matrix *matrix_mul_scalar(Matrix *A, mpfr scalar){ 
+//     unsigned int i, j;
+//     Matrix *mat_mul = init_matrix(A->n);
     
-    for (i = 0; i < A->n ; ++i) {
-        for(j = 0; j < A->n; ++j){
-            mat_mul->m[i * A->n + j] = mpmul(A->m[i * A->n + j], scalar);
-        }
-    }
-    return mat_mul;
-}
+//     for (i = 0; i < A->n ; ++i) {
+//         for(j = 0; j < A->n; ++j){
+//             mat_mul->m[i * A->n + j] = mpmul(A->m[i * A->n + j], scalar);
+//         }
+//     }
+//     return mat_mul;
+// }
 
 /*
 Multiplication d'une matrice par un vecteur (A*v)
@@ -216,17 +219,17 @@ Multiplication d'une matrice par un vecteur (A*v)
 
 @return le vecteur A*v
 */
-mpfr *matrix_mul_vector(Matrix *A, mpfr *v){
-    unsigned int i, j;
-    mpfr *res = calloc(A->n, sizeof(mpfr));
+// mpfr *matrix_mul_vector(Matrix *A, mpfr *v){
+//     unsigned int i, j;
+//     mpfr *res = calloc(A->n, sizeof(mpfr));
     
-    for (i = 0; i < A->n ; ++i) {
-        for(j = 0; j < A->n; ++j){
-            res[i] = mpadd(res[i], mpmul(A->m[i * A->n + j], v[j]));
-        }
-    }
-    return res;
-}
+//     for (i = 0; i < A->n ; ++i) {
+//         for(j = 0; j < A->n; ++j){
+//             res[i] = mpadd(res[i], mpmul(A->m[i * A->n + j], v[j]));
+//         }
+//     }
+//     return res;
+// }
 
 /*
 Transpose une matrice A
@@ -234,14 +237,14 @@ Transpose une matrice A
 
 @return la matrice A transposee
 */
-Matrix *matrix_transpose(Matrix *A){
-    unsigned int i, j;
+// Matrix *matrix_transpose(Matrix *A){
+//     unsigned int i, j;
 
-    Matrix *mat_transp = init_matrix(A->n);
-    for(i = 0 ; i < A->n ; i++){
-        for(j = 0 ; j < A->n ; j++){
-            mat_transp->m[i * A->n + j] = A->m[j * A->n + i];
-        }
-    }
-    return mat_transp;
-}
+//     Matrix *mat_transp = init_matrix(A->n);
+//     for(i = 0 ; i < A->n ; i++){
+//         for(j = 0 ; j < A->n ; j++){
+//             mat_transp->m[i * A->n + j] = A->m[j * A->n + i];
+//         }
+//     }
+//     return mat_transp;
+// }
