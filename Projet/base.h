@@ -16,13 +16,13 @@ qui permet de faire des calculs avec des nombres flottants de grande precision.
 #include <mpfr.h>
 
 typedef mpfr_t mpfr;
-typedef uint64_t u64;
+// typedef uint64_t u64;
 
-u64 add(u64 a, u64 b);
+double add(double a, double b);
 
-u64 sub(u64 a, u64 b);
+double sub(double a, double b);
 
-u64 mul(u64 a, u64 b);
+double mul(double a, double b);
 
 // u64 div(u64 a, u64 b);
 

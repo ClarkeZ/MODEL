@@ -5,8 +5,8 @@
 
 void test_base();
 
-void test_matrix(u64 n);
+void test_matrix(int n);
 
-void test_algo(u64 n);
+void test_algo(int n);
 
 #endif // UNIT_TEST_H

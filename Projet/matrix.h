@@ -4,8 +4,8 @@
 #include "base.h"
 
 typedef struct Matrix {
-    u64 *m;
-    u64 n;
+    double *m;
+    int n;
 } Matrix;
 
 typedef struct QR {
@@ -13,9 +13,9 @@ typedef struct QR {
     Matrix *R;
 } QR;
 
-Matrix *init_matrix(u64 n);
+Matrix *init_matrix(int n);
 
-Matrix *init_eye(u64 n);
+Matrix *init_eye(int n);
 
 void free_matrix(Matrix *mat);
 
@@ -37,7 +37,7 @@ Matrix *matrix_transpose(Matrix *A);
 
 Matrix *matrix_inverse(Matrix *A);
 
-Matrix *matrix_mul_coef(Matrix *A, u64 c);
+Matrix *matrix_mul_coef(Matrix *A, double c);
 
 
 /* ===== Fonctions MPFR ===== */
@@ -45,7 +45,7 @@ Matrix *matrix_mul_coef(Matrix *A, u64 c);
 typedef struct MPFR_Matrix
 {
     mpfr *m;     // matrice  M
-    mpfr n;      // Taille de la matrice, pour une matrice carree
+    int n;      // Taille de la matrice, pour une matrice carree
 } MPFR_Matrix;
 
 typedef struct MPFR_QR
@@ -55,10 +55,10 @@ typedef struct MPFR_QR
 } MPFR_QR;
 
 /* Initialise une matrice de taille n*n */
-MPFR_Matrix *init_MPFR_matrix(mpfr n);
+MPFR_Matrix *init_MPFR_matrix(int n);
 
 /* Initialise une matrice identite de taille n*n */
-MPFR_Matrix *init_MPFR_eye(mpfr n);
+MPFR_Matrix *init_MPFR_eye(int n);
 
 /* Libere la memoire */
 void free_MPFR_matrix(Matrix *m);

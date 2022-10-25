@@ -20,3 +20,5 @@ void sub_lines(mpfr *line1, mpfr *line2, mpfr n);
 /* Verifie si la diagonale possede un coefficient nul */
 bool zero_in_diagonal(Matrix *A);
 
+QR *qr_decomposition(Matrix *A);
+

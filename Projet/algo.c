@@ -13,3 +13,7 @@ double randfrom(double min, double max)
     double div = RAND_MAX / range;
     return min + (rand() / div);
 }
+
+QR *qr_decomposition(Matrix *A){
+    
+}

@@ -7,7 +7,7 @@ Initialise une matrice carree de taille n et remplie de 0
 
 @return une matrice de coefficient initialise a 0 de taille n*n 
 */
-Matrix *init_matrix(u64 n){
+Matrix *init_matrix(int n){
     Matrix *mat = malloc(sizeof(Matrix));
 
     if(mat == NULL){
@@ -16,7 +16,7 @@ Matrix *init_matrix(u64 n){
     }
 
     mat->n = n;
-    mat->m = calloc(n*n,sizeof(u64));
+    mat->m = calloc(n*n,sizeof(double));
 
     if(mat->m == NULL){
         printf("init_matrix : Erreur allocation mémoire Matrix !\n");
@@ -31,7 +31,7 @@ Initialise une matrice identite de taille n*n
 
 @return une matrice identite de taille n*n 
 */
-Matrix *init_eye(u64 n) {
+Matrix *init_eye(int n) {
     unsigned int i;
     
     Matrix *mat = malloc(sizeof(Matrix));
@@ -42,14 +42,14 @@ Matrix *init_eye(u64 n) {
     }
 
     mat->n = n;
-    mat->m = calloc(n*n,sizeof(u64));
+    mat->m = calloc(n*n,sizeof(double));
 
     if(mat->m == NULL){
         printf("init_matrix : Erreur allocation mémoire Matrix !\n");
         return NULL;
     }
     for (i = 0; i < n; ++i) {
-        mat->m[i*n+i] = 1;
+        mat->m[i*n + i] = 1;
     }
     return mat;
 }
@@ -81,7 +81,7 @@ Copie une matrice dans une nouvelle matrice
 Matrix *copy_matrix(Matrix *M){
     Matrix *copy = init_matrix(M->n);
 
-    memcpy(copy->m, M->m, sizeof(u64) * M->n * M->n);
+    memcpy(copy->m, M->m, sizeof(double) * M->n * M->n);
 
     return copy;
 }
@@ -94,7 +94,7 @@ void print_matrix(Matrix *mat){
     unsigned int i, j;
     for (i = 0; i < mat->n; ++i) {
         for (j = 0; j < mat->n; ++j) {
-            printf("%llu ", mat->m[i * mat->n + j]);
+            printf("%f ", mat->m[i * mat->n + j]);
             // mpfr_out_str (stdout, 10, 0, M->m[i*M->n+j], MPFR_RNDD);
         }
         printf("\n");
@@ -133,7 +133,7 @@ Soustrait deux matrices (A-B)
 */
 Matrix *matrix_sub(Matrix *A, Matrix *B){
     if (A->n != B->n) {
-        printf("Soustraction de matrice impossible, dimensions : %llu != %llu", A->n, B->n);
+        printf("Soustraction de matrice impossible, dimensions : %d != %d", A->n, B->n);
         return NULL;
     }
     unsigned int i;
@@ -156,20 +156,20 @@ Matrix *matrix_mul(Matrix *A, Matrix *B) {
     unsigned int i, j, k;
 
     if (A->n == B->n) {
-        u64 n = A->n;
+        int n = A->n;
         Matrix *mat_mult = init_matrix(A->n);
         for (i = 0 ; i < n ; i++)
             for (j = 0 ; j < n ; j++)
                 for (k = 0 ; k < n ; k++) {
-                    u64 x = mat_mult->m[i * n + j];
-                    u64 y = A->m[k + n * i];
-                    u64 z = B->m[k * n + j];
+                    double x = mat_mult->m[i * n + j];
+                    double y = A->m[k + n * i];
+                    double z = B->m[k * n + j];
                     mat_mult->m[i * n + j] = add(x, mul(y, z));
                 }
         return mat_mult;   
     }
     else {
-        printf("Multiplication de matrice impossible, dimensions : %llu != %llu", A->n, B->n);
+        printf("Multiplication de matrice impossible, dimensions : %d != %d", A->n, B->n);
         return NULL;
     }
 }
@@ -181,7 +181,7 @@ Multiplication d'une matrice par un coefficient A * c
 
 @return la matrice A + B
 */
-Matrix *matrix_mul_coef(Matrix *A, u64 c){
+Matrix *matrix_mul_coef(Matrix *A, double c){
     unsigned int i, j;
     Matrix *res = copy_matrix(A);
 
@@ -237,14 +237,14 @@ Transpose une matrice A
 
 @return la matrice A transposee
 */
-// Matrix *matrix_transpose(Matrix *A){
-//     unsigned int i, j;
+Matrix *matrix_transpose(Matrix *A){
+    unsigned int i, j;
 
-//     Matrix *mat_transp = init_matrix(A->n);
-//     for(i = 0 ; i < A->n ; i++){
-//         for(j = 0 ; j < A->n ; j++){
-//             mat_transp->m[i * A->n + j] = A->m[j * A->n + i];
-//         }
-//     }
-//     return mat_transp;
-// }
+    Matrix *mat_transp = init_matrix(A->n);
+    for(i = 0 ; i < A->n ; i++){
+        for(j = 0 ; j < A->n ; j++){
+            mat_transp->m[i * A->n + j] = A->m[j * A->n + i];
+        }
+    }
+    return mat_transp;
+}

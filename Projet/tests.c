@@ -4,23 +4,23 @@
 
 void test_add(){
     printf(" --- TEST ADD --- \n");
-    u64 a = rand();
-    u64 b = rand();
-    printf("%llu + %llu = %llu\n", a, b, add(a, b));
+    double a = randfrom(0 - rand(), rand());
+    double b = randfrom(0 - rand(), rand());
+    printf("%f + %f = %f\n", a, b, add(a, b));
 }
 
 void test_sub(){
     printf(" --- TEST SUB --- \n");
-    u64 a = rand();
-    u64 b = rand();
-    printf("%llu - %llu = %llu\n", a, b, sub(a, b));
+    double a = randfrom(0 - rand(), rand());
+    double b = randfrom(0 - rand(), rand());
+    printf("%f - %f = %f\n", a, b, sub(a, b));
 }
 
 void test_mul(){
     printf(" --- TEST MUL --- \n");
-    u64 a = rand();
-    u64 b = rand();
-    printf("%llu * %llu = %llu\n", a, b, mul(a, b));
+    double a = randfrom(0 - rand(), rand());
+    double b = randfrom(0 - rand(), rand());
+    printf("%f * %f = %f\n", a, b, mul(a, b));
 }
 
 // void test_mpadd(){
@@ -43,7 +43,7 @@ void test_mul(){
 
 /* ---------- TEST MATRIX.C ---------- */
 
-void test_init_matrix(u64 n){
+void test_init_matrix(int n){
     printf("--- TEST INIT_MATRIX ---\n");
     Matrix *M = init_matrix(n);
     print_matrix(M);
@@ -51,7 +51,7 @@ void test_init_matrix(u64 n){
     free_matrix(M);
 }
 
-void test_init_eye(u64 n){
+void test_init_eye(int n){
     printf("--- TEST INIT_EYE ---\n");
     Matrix *M = init_eye(n);
     print_matrix(M);
@@ -59,7 +59,7 @@ void test_init_eye(u64 n){
     free_matrix(M);
 }
 
-void test_copy_matrix(u64 n){
+void test_copy_matrix(int n){
     printf("--- TEST COPY_MATRIX ---\n");
     Matrix *M = init_matrix(n);
     Matrix *copy;
@@ -67,7 +67,7 @@ void test_copy_matrix(u64 n){
     unsigned int i;
 
     for (i = 0 ; i < M->n * M->n ; ++i) 
-        M->m[i] = rand();
+        M->m[i] = randfrom(0 - rand(), rand());
 
     printf("--- M AVANT ---\n");
     print_matrix(M);
@@ -87,7 +87,7 @@ void test_copy_matrix(u64 n){
     free_matrix(copy);
 }
 
-void test_matrix_add(u64 n){
+void test_matrix_add(int n){
     printf("--- TEST MATRIX_ADD ---\n");
     Matrix *A = init_matrix(n);
     Matrix *B = init_matrix(n);
@@ -96,8 +96,8 @@ void test_matrix_add(u64 n){
     unsigned int i;
 
     for (i = 0 ; i < A->n * A->n ; ++i){
-        A->m[i] = rand();
-        B->m[i] = rand();
+        A->m[i] = randfrom(0 - rand(), rand());
+        B->m[i] = randfrom(0 - rand(), rand());
     }
     // printf("--- A ---\n");
     // print_matrix(A);
@@ -118,7 +118,7 @@ void test_matrix_add(u64 n){
     free_matrix(res);
 }
 
-void test_matrix_sub(u64 n){
+void test_matrix_sub(int n){
     printf("--- TEST MATRIX_SUB ---\n");
     Matrix *A = init_matrix(n);
     Matrix *B = init_matrix(n);
@@ -127,8 +127,8 @@ void test_matrix_sub(u64 n){
     unsigned int i;
 
     for (i = 0 ; i < A->n * A->n ; ++i){
-        A->m[i] = rand();
-        B->m[i] = rand();
+        A->m[i] = randfrom(0 - rand(), rand());
+        B->m[i] = randfrom(0 - rand(), rand());
     }
     // printf("--- A ---\n");
     // print_matrix(A);
@@ -149,7 +149,7 @@ void test_matrix_sub(u64 n){
     free_matrix(res);
 }
 
-void test_matrix_mul(u64 n){
+void test_matrix_mul(int n){
     printf("--- TEST MATRIX_MUL ---\n");
     Matrix *A = init_matrix(n);
     Matrix *B = init_matrix(n);
@@ -158,8 +158,8 @@ void test_matrix_mul(u64 n){
     unsigned int i;
 
     for (i = 0 ; i < A->n * A->n ; ++i){
-        A->m[i] = rand();
-        B->m[i] = rand();
+        A->m[i] = randfrom(0 - rand(), rand());
+        B->m[i] = randfrom(0 - rand(), rand());
     }
     printf("--- A ---\n");
     print_matrix(A);
@@ -180,28 +180,28 @@ void test_matrix_mul(u64 n){
     free_matrix(res);
 }
 
-void test_matrix_mul_coef(u64 n){
+void test_matrix_mul_coef(int n){
     printf("--- TEST MATRIX_MUL_COEF ---\n");
     Matrix *A = init_matrix(n);
-    u64 c = rand();
+    double c = randfrom(0 - rand(), rand());
     Matrix *res;
     double tic, toc;
     unsigned int i;
 
     for (i = 0 ; i < A->n * A->n ; ++i)
-        A->m[i] = rand();
+        A->m[i] = randfrom(0 - rand(), rand());
 
-    // printf("--- A ---\n");
-    // print_matrix(A);
-    // printf("--- c ---\n");
-    // printf("%u\n", c);
+    printf("--- A ---\n");
+    print_matrix(A);
+    printf("--- c ---\n");
+    printf("%f\n", c);
 
     tic = wtime();
     res = matrix_mul_coef(A, c);
     toc = wtime();
 
-    // printf("--- A * c ---\n");
-    // print_matrix(res);
+    printf("--- A * c ---\n");
+    print_matrix(res);
 
     printf("time = %f\n", toc - tic);
 

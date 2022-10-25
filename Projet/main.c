@@ -2,6 +2,7 @@
 #include "unit_test.h"
 
 int main(){
+    srand(time(NULL));
     test_base();
     test_matrix(3);
     test_algo(3);

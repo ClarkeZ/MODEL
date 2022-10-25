@@ -19,19 +19,19 @@ void test_mpmul();
 
 /* ---------- TEST MATRIX.C ---------- */
 
-void test_init_matrix(u64 n);
+void test_init_matrix(int n);
 
-void test_init_eye(u64 n);
+void test_init_eye(int n);
 
-void test_copy_matrix(u64 n);
+void test_copy_matrix(int n);
 
-void test_matrix_add(u64 n);
+void test_matrix_add(int n);
 
-void test_matrix_sub(u64 n);
+void test_matrix_sub(int n);
 
-void test_matrix_mul(u64 n);
+void test_matrix_mul(int n);
 
-void test_matrix_mul_coef(u64 n);
+void test_matrix_mul_coef(int n);
 
 
 

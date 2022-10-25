@@ -18,7 +18,7 @@ void test_base(){
 }
 
 /* ---------- TEST MATRIX.C ---------- */
-void test_matrix(u64 n){
+void test_matrix(int n){
 
     // test_init_matrix(n);
 
@@ -37,32 +37,32 @@ void test_matrix(u64 n){
 }
 
  /* ---------- TEST ALGO.C ---------- */
-void test_algo(u64 n){
+void test_algo(int n){
 
-    // test_swap_lines(prime, n);
+    // test_swap_lines(n);
 
-    // test_swap_columns(prime, n);
+    // test_swap_columns(n);
 
-    // test_mul_line(prime, n);
+    // test_mul_line(n);
 
-    // test_multiply_line(prime, n);
+    // test_multiply_line(n);
 
-    // test_substract_lines(prime, n);
+    // test_substract_lines(n);
 
-    // test_sub_lines(prime, n);
+    // test_sub_lines(n);
 
-    // test_zero_in_diagonal(prime, n);
+    // test_zero_in_diagonal(n);
 
-    // test_solv_upper_triangular_matrix(prime, n);
+    // test_solv_upper_triangular_matrix(n);
 
-    // test_solv_lower_triangular_matrix(prime, n);
+    // test_solv_lower_triangular_matrix(n);
 
-    // test_inverse_upper_triangular_matrix(prime, n);
+    // test_inverse_upper_triangular_matrix(n);
 
-    // test_inverse_lower_triangular_matrix(prime, n);
+    // test_inverse_lower_triangular_matrix(n);
 
-    // test_matrix_vector_product(prime, n);
+    // test_matrix_vector_product(n);
 
-    // test_linear_solv(prime, n);
+    // test_linear_solv(n);
 
 }

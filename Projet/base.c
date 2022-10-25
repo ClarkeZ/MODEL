@@ -2,15 +2,15 @@
 
 int PRECISION = 200;
 
-u64 add(u64 a, u64 b) {
+double add(double a, double b) {
     return a + b;
 }
 
-u64 sub(u64 a, u64 b) {
+double sub(double a, double b) {
     return a - b;
 }
 
-u64 mul(u64 a, u64 b) {
+double mul(double a, double b) {
     return a * b;
 }
 
