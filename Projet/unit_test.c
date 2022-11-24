@@ -32,12 +32,16 @@ void test_matrix(int n){
 
     // test_matrix_mul(n);
 
-    test_matrix_mul_coef(n);
+    // test_matrix_mul_coef(n);
 
 }
 
  /* ---------- TEST ALGO.C ---------- */
 void test_algo(int n){
+
+    // test_qr_decomposition(n);
+
+    test_quasi_hess(n);
 
     // test_swap_lines(n);
 

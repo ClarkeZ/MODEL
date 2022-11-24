@@ -208,3 +208,68 @@ void test_matrix_mul_coef(int n){
     free_matrix(A);
     free_matrix(res);
 }
+
+
+void test_qr_decomposition(int n){
+    printf("--- TEST QR_DECOMPOSITION ---\n");
+    Matrix *M = init_matrix(n);
+    QR *qr = (QR *) malloc(sizeof(QR));
+    int i;
+    double tic, toc;
+
+    for (i = 0 ; i < n * n ; ++i) 
+        // M->m[i] = randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN));
+        M->m[i] = rand() % (MAX-MIN); // Pour des entiers
+
+    printf("--- AVANT ---\n");
+    print_matrix(M);
+    
+    tic = wtime();
+    qr = qr_decomposition(M);
+    toc = wtime();
+
+    printf("--- APRES ---\n");
+    printf("--- Q ---\n");
+    print_matrix(qr->Q);
+    printf("--- R ---\n");
+    print_matrix(qr->R);
+
+    printf("--- VERIF = AVANT ---\n");
+    Matrix *tmp_qr = matrix_mul(qr->Q, qr->R);
+    print_matrix(tmp_qr);
+
+    free_matrix(tmp_qr);
+
+    printf("\ntime = %f\n", toc - tic);
+
+    free_matrix(M);
+    free_qr(qr);
+}
+
+void test_quasi_hess(int n){
+    printf("--- TEST QUASI HESSENBERG ---\n");
+    Matrix *M = init_matrix(n);
+    Matrix *hess = init_matrix(n);
+    int i;
+    double tic, toc;
+
+    for (i = 0 ; i < n * n ; ++i) 
+        // M->m[i] = randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN));
+        M->m[i] = rand() % (MAX-MIN); // Pour des entiers
+
+    printf("--- AVANT ---\n");
+    print_matrix(M);
+
+    tic = wtime();
+    hess = quasi_hess(M);
+    toc = wtime();
+
+    printf("--- APRES ---\n");
+    printf("--- QUASI HESSENBERG ---\n");
+    print_matrix(hess);
+
+    printf("\ntime = %f\n", toc - tic);
+
+    free_matrix(M);
+    free_matrix(hess);
+}

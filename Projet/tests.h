@@ -39,5 +39,9 @@ void test_matrix_mul_coef(int n);
 
 /* ---------- TEST ALGO.C ---------- */
 
+void test_qr_decomposition(int n);
+
+void test_quasi_hess(int n);
+
 
 #endif // TESTS_H
