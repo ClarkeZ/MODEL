@@ -85,55 +85,78 @@ QR *qr_decomposition(Matrix *A){
 }
 
 Matrix *quasi_hess(Matrix *A){
+    unsigned int i = 0;
+    unsigned int j = 0;
+    unsigned int k = 0;
+    unsigned int cpt = 0;
+
+    unsigned int nb_zero = 0;
+    unsigned int cpt_zero = 0;
+    
+    double threshold = 0.0001;
+    // double threshold = 1e-4;
+    // double threshold = 2;
+    printf("threshold = %f\n", threshold);
+
+
     QR *qr = (QR *) malloc(sizeof(QR));
     
     Matrix *A_prime = copy_matrix(A);
     qr = qr_decomposition(A_prime);
 
-    double threshold = 0.00001;
-    // double threshold = -1e-4;
-    printf("threshold = %f\n", threshold);
-    int size_n = (A->n / 2);
-    double coef1, coef2;
-    // printf("coef sub : \n");
-    coef1 = A->m[size_n * A->n + 0];
-    coef2 = A->m[(size_n + 1) * A->n + 1];
-    // printf("coef 1 = %f\n", coef1);
-    // printf("coef 2 = %f\n", coef2);
-    // while((coef1 > threshold) || (coef2 > threshold)){
-    //     coef1 -= 0.1;
-    //     coef2 -= 0.1;
-    //     printf("coef 1 = %f\n", coef1);
-    //     printf("coef 2 = %f\n", coef2);
-    // }
-    int i = 0;
-    // Attention CAS OU les coef = 0, boucle inf
-    while(abs(coef1) > threshold && abs(coef2) > threshold){
-        coef1 = A_prime->m[size_n * A->n + 0];
-        coef2 = A_prime->m[(size_n + 1) * A->n + 1];
-        printf("coef 1 = %f\n", coef1);
-        printf("coef 2 = %f\n", coef2);
-        if(abs(coef1) < threshold)
-            printf("***** coef 1 < threshold : %d *****\n", i);
-        if(abs(coef2) < threshold)
-            printf("***** coef 2 < threshold : %d *****\n", i);
-        if(abs(coef1) < threshold && abs(coef2) < threshold){
-            printf("***** les 2 coef < threshold : %d *****\n", i);
-            print_matrix(A_prime);
-            return A_prime;
-        }
-            
+    for(i = 1 ; i < A->n - 1 ; i++){
+        nb_zero += i;
+    }
+    printf("nb zero : %d\n", nb_zero);
+    double zeros[nb_zero]; // +1 ici car sinon il y a un segmentation fault
+    // Recupere les zeros
+    for(i = 0 ; i < A->n - 2 ; i++){
+        for(j = 0 ; j < i + 1 ; j++)
+            zeros[k++] = A->m[(i + 2)*A->n + j];
+    }
 
-        // if(coef1 <= threshold && coef2 <= threshold)
-        //     return A_prime;
-        // else{
-            A_prime = matrix_mul(matrix_mul(qr->Q, A_prime), matrix_transpose(qr->Q));
-            free_qr(qr);
-            qr = qr_decomposition(A_prime);
+    double lower_diag[A->n - 1];
+    // Recupere les coefficients de la subdiagonale inferieure
+    for(i = 0 ; i < A->n - 1 ; i++){
+        lower_diag[i] = A->m[(i + 1)*A->n + i];
+    }
+
+    while(1){
+        for(i = 0 ; i < A->n -1 ; i++){
+            if(lower_diag[i] > threshold)
+                cpt++;
+            printf("coef = %f\n", lower_diag[i]);
+        }
+        // Probleme avec les zeros
+        for(i = 0 ; i < nb_zero ; i++){
+            if(zeros[i] == 0)
+                cpt_zero++;
+            printf("coef zero = %f\n", zeros[i]);
+        }
+        if(cpt == 0 || cpt_zero == nb_zero){
+            printf("cpt = %d\ncpt_zero = %d\n", cpt, cpt_zero);
+            printf("break\n");
+            break;
+        }
+        // if((A->n == 4) && (cpt_zero >= nb_zero - 1)){
+        //     printf("cpt_zero >= nb_zero - 1 : %d >= %d\n", cpt_zero, nb_zero-1);
+        //     break;
         // }
-        // printf("Matrix Quasi hessenberg \n");
-        // print_matrix(A_prime);
-        i++;
+        cpt_zero = 0;
+        cpt = 0;
+        A_prime = matrix_mul(matrix_mul(qr->Q, A_prime), matrix_transpose(qr->Q));
+        free_qr(qr);
+        qr = qr_decomposition(A_prime);
+        print_matrix(A_prime);
+        // Recupere les coefficients de la subdiagonale inferieure
+        for(i = 0 ; i < A->n - 1 ; i++)
+            lower_diag[i] = A_prime->m[(i+1)*A->n + i];
+        // Recupere les zeros 
+        k = 0;
+        for(i = 0 ; i < A->n - 2 ; i++)
+            for(j = 0 ; j < i+1 ; j++) 
+                zeros[k++] = A_prime->m[(i + 2)*A->n + j];
+        
     }
 
     free_qr(qr);
