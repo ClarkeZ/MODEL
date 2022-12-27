@@ -2,10 +2,11 @@
 #include "unit_test.h"
 
 int main(){
+    int n = 4;
     srand(time(NULL));
     test_base();
-    test_matrix(3);
-    test_algo(3);
+    test_matrix(n);
+    test_algo(n);
 
     // mpfr n;
     // mpfr_init2(n, 200);

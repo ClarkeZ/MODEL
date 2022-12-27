@@ -12,10 +12,13 @@ qui permet de faire des calculs avec des nombres flottants de grande precision.
 #include <string.h>
 
 // GNU MPFR Library
-#include <gmp.h>
-#include <mpfr.h>
+// #include <gmp.h>
+// #include <mpfr.h>
 
-typedef mpfr_t mpfr;
+#define MIN 0
+#define MAX 10
+
+// typedef mpfr_t mpfr;
 // typedef uint64_t u64;
 
 double add(double a, double b);

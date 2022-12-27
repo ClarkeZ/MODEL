@@ -1,6 +1,6 @@
 #include "base.h"
 
-int PRECISION = 200;
+// int PRECISION = 200;
 
 double add(double a, double b) {
     return a + b;

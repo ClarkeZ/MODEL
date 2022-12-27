@@ -18,13 +18,17 @@ double find_cos(int i, int j, Matrix *A);
 
 double find_sin(int i, int j, Matrix *A);
 
-Matrix *Givens(int i, int j, Matrix *A);
+Matrix *givens(int i, int j, Matrix *A);
+
+void givens_matrix(int i, int j, Matrix *G, Matrix *A);
 
 Matrix *mat_Q(Matrix *A);
 
 QR *qr_decomposition(Matrix *A);
 
 Matrix *quasi_hess(Matrix *A);
+
+Matrix *hessenberg(Matrix *A);
 
 /* Multiplication d'une ligne de matrice par un coefficient */
 // void mult_line_scalar(mpfr *line, mpfr coef, mpfr n);

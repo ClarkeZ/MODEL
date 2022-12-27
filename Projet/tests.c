@@ -273,3 +273,31 @@ void test_quasi_hess(int n){
     free_matrix(M);
     free_matrix(hess);
 }
+
+void test_hessenberg(int n){
+    printf("--- TEST HESSENBERG ---\n");
+    Matrix *M = init_matrix(n);
+    Matrix *hess = init_matrix(n);
+    int i;
+    double tic, toc;
+
+    for (i = 0 ; i < n * n ; ++i) 
+        // M->m[i] = randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN));
+        M->m[i] = rand() % (MAX-MIN); // Pour des entiers
+
+    printf("--- AVANT ---\n");
+    print_matrix(M);
+
+    tic = wtime();
+    hess = hessenberg(M);
+    toc = wtime();
+
+    printf("--- APRES ---\n");
+    printf("--- HESSENBERG ---\n");
+    print_matrix(hess);
+
+    printf("\ntime = %f\n", toc - tic);
+
+    free_matrix(M);
+    free_matrix(hess);
+}

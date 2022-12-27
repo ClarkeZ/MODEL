@@ -41,7 +41,9 @@ void test_algo(int n){
 
     // test_qr_decomposition(n);
 
-    test_quasi_hess(n);
+    // test_quasi_hess(n);
+
+    test_hessenberg(n);
 
     // test_swap_lines(n);
 

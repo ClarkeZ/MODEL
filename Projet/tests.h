@@ -43,5 +43,7 @@ void test_qr_decomposition(int n);
 
 void test_quasi_hess(int n);
 
+void test_hessenberg(int n);
+
 
 #endif // TESTS_H
