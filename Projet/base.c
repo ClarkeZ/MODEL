@@ -14,10 +14,6 @@ double mul(double a, double b) {
     return a * b;
 }
 
-// u64 div(u64 a, u64 b) {
-//     return a / b;
-// }
-
 // void mpinit(mpfr a){
 //     mpfr_init2(a, PRECISION);
 // }

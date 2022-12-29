@@ -27,12 +27,7 @@ void test_copy_matrix(int n);
 
 void test_matrix_add(int n);
 
-void test_matrix_sub(int n);
-
 void test_matrix_mul(int n);
-
-void test_matrix_mul_coef(int n);
-
 
 
 

@@ -27,10 +27,23 @@ double func_sqrt(double n){
 }
 
 double find_cos(int i, int j, Matrix *A){
+    // printf("Aij = %f\n",A->m[i*A->n + j]);
+    // printf("Ajj = %f\n",A->m[j*A->n + j]);
     if(A->m[i*A->n + j] == 0 && A->m[j*A->n + j] == 0)
         return 1;
     else 
         return A->m[j*A->n + j] / sqrt(A->m[j*A->n + j]*A->m[j*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
+        // si sqrt de math.h ne marche pas utiliser la fonction ci-dessous
+        // return A->m[j*A->n + j] / func_sqrt(A->m[j*A->n + j]*A->m[j*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
+}
+
+double find_cos_matrix(int i, int j, Matrix *A){
+    // printf("Aij = %f\n",A->m[i*A->n + j]);
+    // printf("Ajj = %f\n",A->m[j*A->n + j]);
+    if(A->m[(i-1)*A->n + j] == 0 && A->m[i*A->n + j] == 0)
+        return 1;
+    else 
+        return A->m[(i-1)*A->n + j] / sqrt(A->m[(i-1)*A->n + j]*A->m[(i-1)*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
         // si sqrt de math.h ne marche pas utiliser la fonction ci-dessous
         // return A->m[j*A->n + j] / func_sqrt(A->m[j*A->n + j]*A->m[j*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
 }
@@ -44,8 +57,18 @@ double find_sin(int i, int j, Matrix *A){
         // return A->m[i*A->n + j] / func_sqrt(A->m[j*A->n + j]*A->m[j*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
 }
 
+double find_sin_matrix(int i, int j, Matrix *A){
+    if(A->m[i*A->n + j] == 0 && A->m[(i-1)*A->n + j] == 0)
+        return 1;
+    else   
+        return A->m[i*A->n + j] / sqrt(A->m[(i-1)*A->n + j]*A->m[(i-1)*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
+        //si sqrt de math.h ne marche pas utiliser la fonction ci-dessous
+        // return A->m[i*A->n + j] / func_sqrt(A->m[j*A->n + j]*A->m[j*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
+}
+
 Matrix *givens(int i, int j, Matrix *A){
     Matrix *G = init_eye(A->n);
+    // printf("n%d-j%d-1 = %d\n",A->n, j, k);
     double c = find_cos(i, j, A);
     double s = find_sin(i, j, A);
     // printf("c = %f\n", c);
@@ -69,8 +92,9 @@ Matrix *givens(int i, int j, Matrix *A){
 }
 
 void givens_matrix(int i, int j, Matrix *G, Matrix *A){
-    double c = find_cos(i, j, A);
-    double s = find_sin(i, j, A);
+    // printf("n%d-j%d-1 = %d\n",A->n, j, k);
+    double c = find_cos_matrix(i, j, A);
+    double s = find_sin_matrix(i, j, A);
     // printf("c = %f\n", c);
     // printf("s = %f\n", s);
 
@@ -80,9 +104,9 @@ void givens_matrix(int i, int j, Matrix *G, Matrix *A){
     //     // exit(EXIT_FAILURE);
     // }    
 
-    G->m[j*A->n + j] = c; // En haut a gauche
-    G->m[j*A->n + i] = s; // En haut a droite
-    G->m[i*A->n + j] = -s; // En bas a gauche
+    G->m[(i-1)*A->n + (i-1)] = c; // En haut a gauche
+    G->m[(i-1)*A->n + i] = s; // En haut a droite
+    G->m[i*A->n + (i-1)] = -s; // En bas a gauche
     G->m[i*A->n + i] = c; // En bas a droite
 
     // printf("Givens(%d, %d)\n", i+1, j+1);
@@ -212,97 +236,59 @@ Matrix *quasi_hess(Matrix *A){
 }
 
 
-// Matrix *hessenberg(Matrix *A){
-//     int n;
-
-//     if((n = A->n) < 3){
-//         perror("Taille de la matrice doit etre superieur a 3 pour la matrice Hessenberg");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     Matrix *hess = init_matrix(n);
-//     for(int i = 0 ; i < n ; i++)
-//         for(int j = 0 ; j < n ; j++){
-//             printf("i = %d, j = %d\n", i, j);
-//             // Matrix *G = givens(n - 2, n-1, A); // -1 car on commence a 0
-//             Matrix *G = givens(i, j, A);
-//             Matrix *tmp = matrix_mul(G,A);
-//             printf("G * A = \n");
-//             print_matrix(tmp);
-//             Matrix *G2 = givens(i, j, tmp);
-//             Matrix *Gt = matrix_transpose(G2);
-//             // Matrix *Gt = matrix_transpose(G);  
-//             Matrix *tmp2 = matrix_mul(tmp, Gt);
-//             printf("G A G* = \n");
-//             print_matrix(tmp2);
-//             printf("====================\n");
-//         }
-//     // printf("G = \n");
-//     // print_matrix(G);
-//     // printf("A = \n");
-//     // print_matrix(A);
-
-//     // Matrix *Gt = matrix_transpose(G);
-//     // hess = matrix_mul(tmp, Gt);
-//     // free_matrix(tmp);
-//     // free_matrix(Gt);
-//     // printf("Hess : G_(n-1, n) A G*_(n-1, n)= \n");
-//     // print_matrix(hess);
-    
-//     // G = givens(n - 2, n - 1, A); // A ou A' ?
-//     // hess = matrix_mul(matrix_mul(G, hess), matrix_transpose(G));
-//     // print_matrix(hess);
-
-//     // // G = givens(n - 1, n, hess); // (?) G de A'' ?
-//     // hess = matrix_mul(matrix_mul(G, hess), matrix_transpose(G));
-
-//     // // G = givens(n - 2, n - 1, hess); // Logiquement ? comme en haut
-//     // print_matrix(hess);
-
-//     return hess;
-// }
-
 Matrix *hessenberg(Matrix *A){
     int i = 0;
     int j = 0;
     int n = A->n;
     Matrix *hess = copy_matrix(A);
     Matrix *G = init_matrix(n);
-    Matrix *Gt = init_matrix(n);
+    Matrix *Gt = init_eye(n);
     // Matrix *tmp = init_matrix(n);
-    G = givens(0, 0, hess);
-    Gt = matrix_transpose(G);
-    hess = matrix_mul(G, hess);
-    hess = matrix_mul(hess, Gt);
-    free_matrix(G);
-    free_matrix(Gt);
+    // Si le dernier element de la premiere ligne est different de 0 alors on fait la rotation
+    // if(hess->m[(n-1)*n] != 0) 
+    // G = givens(n-1, 0, hess);
+    // printf("G = \n");
+    // print_matrix(G);
 
-    printf("Hess : G_(1, n) A G*_(1, n)= \n");
-    print_matrix(hess);
+    // Gt = matrix_transpose(G);
+
+    // hess = matrix_mul(G, hess);
+
+    // hess = matrix_mul(hess, Gt);
+    // free_matrix(G);
+    // free_matrix(Gt);
+
+    // printf("Hess : G_(1, n) A G*_(1, n)= \n");
+    // print_matrix(hess);
 
     G = init_eye(n);
-    for(i = 0 ; i < A->n - 2 ; i++){
-        for(j = 0 ; j < i + 1 ; j++){
-            // if(i == j)
+
+    // Parcours les coeff sous la sub diagonal
+    for(j = 0 ; j < n - 2 ; j++){
+        for(i = n-1 ; i > j + 1 ; i--){
+            // if(i == n-1 && j == 0)
             //     continue;
+            // printf("i = %d, j = %d\n", i, j);
             if(hess->m[i*n + j] != 0){
-                // G = givens(i, j, hess);
-                // Gt = matrix_transpose(G);
-                // tmp = matrix_mul(G, hess);
-                // hess = matrix_mul(tmp, Gt);
-                // hess = matrix_mul(G, hess);
-                // A = matrix_mul(G, A);
-                // free_matrix(G);
-                // free_matrix(Gt);
-                // free_matrix(tmp);
+                G = init_eye(n);
                 givens_matrix(i, j, G, hess);
-                printf("i = %d, j = %d\n", i, j);
+                // printf("G = \n");
+                // print_matrix(G);
+                // printf("Hess = \n");
+                // print_matrix(hess);
+                Gt = matrix_transpose(G);
+                hess = matrix_mul(G, hess);
+                hess = matrix_mul(hess, Gt);
+                free_matrix(G);
+                free_matrix(Gt);
+
+                // givens_matrix(i, j, G, hess);
             }
         }
     }
-    hess = matrix_mul(G, hess);
-    // parcours the under the subdiagonal elements
-
+    // printf("G = \n");
+    // print_matrix(G);
+    // hess = matrix_mul(G, hess);
 
     return hess;
 

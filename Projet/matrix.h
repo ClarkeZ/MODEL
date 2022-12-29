@@ -29,13 +29,9 @@ Matrix *matrix_mul(Matrix *A, Matrix *B);
 
 Matrix *matrix_add(Matrix *A, Matrix *B);
 
-Matrix *matrix_sub(Matrix *A, Matrix *B);
-
 Matrix *matrix_transpose(Matrix *A);
 
 Matrix *matrix_inverse(Matrix *A);
-
-Matrix *matrix_mul_coef(Matrix *A, double c);
 
 
 /* ===== Fonctions MPFR ===== */

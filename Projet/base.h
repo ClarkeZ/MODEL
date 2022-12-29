@@ -27,8 +27,6 @@ double sub(double a, double b);
 
 double mul(double a, double b);
 
-// u64 div(u64 a, u64 b);
-
 // void mpinit(mpfr a);
 
 // void mpset(mpfr a, double b);

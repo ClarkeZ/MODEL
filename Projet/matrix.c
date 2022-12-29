@@ -124,26 +124,7 @@ Matrix *matrix_add(Matrix *A, Matrix *B){
     }
 }
 
-/*
-Soustrait deux matrices (A-B)
-@param A : la premiere matrice
-@param B : la deuxieme matrice
 
-@return la matrice A-B
-*/
-Matrix *matrix_sub(Matrix *A, Matrix *B){
-    if (A->n != B->n) {
-        printf("Soustraction de matrice impossible, dimensions : %d != %d", A->n, B->n);
-        return NULL;
-    }
-    unsigned int i;
-
-    Matrix *mat_sub = init_matrix(A->n);
-        for (i = 0 ; i < A->n * A->n ; ++i) {
-            mat_sub->m[i] = sub(A->m[i], B->m[i]);
-        }
-        return mat_sub;  
-}
 
 /*
 Multiplication naive de deux matrices (A*B)
@@ -159,13 +140,16 @@ Matrix *matrix_mul(Matrix *A, Matrix *B) {
         int n = A->n;
         Matrix *mat_mult = init_matrix(A->n);
         for (i = 0 ; i < n ; i++)
-            for (j = 0 ; j < n ; j++)
+            for (j = 0 ; j < n ; j++){
+
                 for (k = 0 ; k < n ; k++) {
                     double x = mat_mult->m[i * n + j];
                     double y = A->m[k + n * i];
                     double z = B->m[k * n + j];
                     mat_mult->m[i * n + j] = add(x, mul(y, z));
                 }
+                // printf("res[%d %d] = %f\n", i*n, j, mat_mult->m[i*n + j]);
+            }
         return mat_mult;   
     }
     else {
@@ -173,63 +157,6 @@ Matrix *matrix_mul(Matrix *A, Matrix *B) {
         return NULL;
     }
 }
-
-/*
-Multiplication d'une matrice par un coefficient A * c
-@param A : une matrice
-@param c : le coefficient 
-
-@return la matrice A + B
-*/
-Matrix *matrix_mul_coef(Matrix *A, double c){
-    unsigned int i, j;
-    Matrix *res = copy_matrix(A);
-
-    for(i = 0 ; i < A->n ; i++){
-        for(j = 0 ; j < A->n ; j++){
-            res->m[i*A->n + j] = mul(c, A->m[i*A->n + j]);
-        }
-    }
-    return res;
-}
-
-/*
-Multiplication d'une matrice par un scalaire (A*c)
-@param A : la matrice
-@param c : le scalaire
-
-@return la matrice A*c
-*/
-// Matrix *matrix_mul_scalar(Matrix *A, mpfr scalar){ 
-//     unsigned int i, j;
-//     Matrix *mat_mul = init_matrix(A->n);
-    
-//     for (i = 0; i < A->n ; ++i) {
-//         for(j = 0; j < A->n; ++j){
-//             mat_mul->m[i * A->n + j] = mpmul(A->m[i * A->n + j], scalar);
-//         }
-//     }
-//     return mat_mul;
-// }
-
-/*
-Multiplication d'une matrice par un vecteur (A*v)
-@param A : la matrice
-@param v : le vecteur
-
-@return le vecteur A*v
-*/
-// mpfr *matrix_mul_vector(Matrix *A, mpfr *v){
-//     unsigned int i, j;
-//     mpfr *res = calloc(A->n, sizeof(mpfr));
-    
-//     for (i = 0; i < A->n ; ++i) {
-//         for(j = 0; j < A->n; ++j){
-//             res[i] = mpadd(res[i], mpmul(A->m[i * A->n + j], v[j]));
-//         }
-//     }
-//     return res;
-// }
 
 /*
 Transpose une matrice A

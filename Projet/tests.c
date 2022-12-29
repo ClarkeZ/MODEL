@@ -118,36 +118,6 @@ void test_matrix_add(int n){
     free_matrix(res);
 }
 
-void test_matrix_sub(int n){
-    printf("--- TEST MATRIX_SUB ---\n");
-    Matrix *A = init_matrix(n);
-    Matrix *B = init_matrix(n);
-    Matrix *res;
-    double tic, toc;
-    unsigned int i;
-
-    for (i = 0 ; i < A->n * A->n ; ++i){
-        A->m[i] = randfrom(0 - rand(), rand());
-        B->m[i] = randfrom(0 - rand(), rand());
-    }
-    // printf("--- A ---\n");
-    // print_matrix(A);
-    // printf("--- B ---\n");
-    // print_matrix(B);
-
-    tic = wtime();
-    res = matrix_sub(A, B);
-    toc = wtime();
-
-    // printf("--- A - B ---\n");
-    // print_matrix(res);
-
-    printf("time = %f\n", toc - tic);
-
-    free_matrix(A);
-    free_matrix(B);
-    free_matrix(res);
-}
 
 void test_matrix_mul(int n){
     printf("--- TEST MATRIX_MUL ---\n");
@@ -179,36 +149,6 @@ void test_matrix_mul(int n){
     free_matrix(B);
     free_matrix(res);
 }
-
-void test_matrix_mul_coef(int n){
-    printf("--- TEST MATRIX_MUL_COEF ---\n");
-    Matrix *A = init_matrix(n);
-    double c = randfrom(0 - rand(), rand());
-    Matrix *res;
-    double tic, toc;
-    unsigned int i;
-
-    for (i = 0 ; i < A->n * A->n ; ++i)
-        A->m[i] = randfrom(0 - rand(), rand());
-
-    printf("--- A ---\n");
-    print_matrix(A);
-    printf("--- c ---\n");
-    printf("%f\n", c);
-
-    tic = wtime();
-    res = matrix_mul_coef(A, c);
-    toc = wtime();
-
-    printf("--- A * c ---\n");
-    print_matrix(res);
-
-    printf("time = %f\n", toc - tic);
-
-    free_matrix(A);
-    free_matrix(res);
-}
-
 
 void test_qr_decomposition(int n){
     printf("--- TEST QR_DECOMPOSITION ---\n");
@@ -282,8 +222,9 @@ void test_hessenberg(int n){
     double tic, toc;
 
     for (i = 0 ; i < n * n ; ++i) 
-        // M->m[i] = randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN));
-        M->m[i] = rand() % (MAX-MIN); // Pour des entiers
+        M->m[i] = randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN)); // Pour des doubles
+        // M->m[i] = rand() % (MAX-MIN); // Pour des entiers
+
 
     printf("--- AVANT ---\n");
     print_matrix(M);

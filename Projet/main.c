@@ -2,7 +2,7 @@
 #include "unit_test.h"
 
 int main(){
-    int n = 4;
+    int n = 6;
     srand(time(NULL));
     test_base();
     test_matrix(n);
