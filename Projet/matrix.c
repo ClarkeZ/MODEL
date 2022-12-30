@@ -95,7 +95,6 @@ void print_matrix(Matrix *mat){
     for (i = 0; i < mat->n; ++i) {
         for (j = 0; j < mat->n; ++j) {
             printf("%f ", mat->m[i * mat->n + j]);
-            // mpfr_out_str (stdout, 10, 0, M->m[i*M->n+j], MPFR_RNDD);
         }
         printf("\n");
     }
@@ -153,7 +152,7 @@ Matrix *matrix_mul(Matrix *A, Matrix *B) {
         return mat_mult;   
     }
     else {
-        printf("Multiplication de matrice impossible, dimensions : %d != %d", A->n, B->n);
+        printf("matrix.c/matrix_mul : Multiplication de matrice impossible, dimensions : %d != %d", A->n, B->n);
         return NULL;
     }
 }
@@ -171,6 +170,140 @@ Matrix *matrix_transpose(Matrix *A){
     for(i = 0 ; i < A->n ; i++){
         for(j = 0 ; j < A->n ; j++){
             mat_transp->m[i * A->n + j] = A->m[j * A->n + i];
+        }
+    }
+    return mat_transp;
+}
+
+/* ***** MPFR ***** */
+
+MPFR_Matrix *init_MPFR_matrix(int n){
+    MPFR_Matrix *mat = malloc(sizeof(MPFR_Matrix));
+
+    if(mat == NULL){
+        printf("init_MPFR_matrix : Erreur allocation mémoire struct MPFR_Matrix !\n");
+        return NULL;
+    }
+
+    mat->n = n;
+    mat->m = malloc(n*n * sizeof(mpfr_t));
+
+    if(mat->m == NULL){
+        printf("init_MPFR_matrix : Erreur allocation mémoire MPFR_Matrix !\n");
+        return NULL;
+    }
+
+    // Initialisation des elements de la matrice
+    for (int i = 0; i < n*n; i++) {
+        mpinit(mat->m[i]);
+        mpset(mat->m[i], 0);
+    }
+    return mat;
+}
+
+MPFR_Matrix *init_MPFR_eye(int n){
+    MPFR_Matrix *mat = init_MPFR_matrix(n);
+
+    for (int i = 0; i < n; i++) 
+        mpset(mat->m[i*n + i], 1);
+    
+    return mat;
+}
+
+void free_MPFR_matrix(MPFR_Matrix *mat){
+    for (int i = 0; i < mat->n * mat->n; i++) {
+        mpfr_clear(mat->m[i]);
+    }
+    free(mat->m);
+    free(mat);
+}
+
+void free_MPFR_qr(MPFR_QR *qr){
+    free_MPFR_matrix(qr->Q);
+    free_MPFR_matrix(qr->R);
+    free(qr);
+}
+
+void print_MPFR_matrix(MPFR_Matrix *mat){
+    unsigned int i, j;
+    for (i = 0; i < mat->n; ++i) {
+        for (j = 0; j < mat->n; ++j) {
+            // mpfr_out_str(stdout, 10, 0, mat->m[i * mat->n + j], MPFR_RNDD);
+            // printf(" ");
+            mpfr_printf("%.10Rf ", mat->m[i * mat->n + j]); // 10 digits
+        }
+        printf("\n");
+    }
+}
+
+MPFR_Matrix *copy_MPFR_matrix(MPFR_Matrix *M){
+    MPFR_Matrix *copy = init_MPFR_matrix(M->n);
+
+    for (int i = 0; i < M->n * M->n; i++) {
+        mpfr_set(copy->m[i], M->m[i], MPFR_RNDD);
+    }
+
+    return copy;
+}
+
+MPFR_Matrix *MPFR_matrix_add(MPFR_Matrix *A, MPFR_Matrix *B){
+    unsigned int i;
+
+    if(A->n == B->n){
+        MPFR_Matrix *mat_add = init_MPFR_matrix(A->n);
+        for (i = 0; i < A->n * A->n; ++i) {
+            mpadd(mat_add->m[i], A->m[i], B->m[i]);
+        }
+        return mat_add;
+    }
+    else{
+        printf("matrix.c/MPFR_matrix_add : Les matrices n'ont pas la meme taille !\n");
+        return NULL;
+    }
+}
+
+MPFR_Matrix *MPFR_matrix_mul(MPFR_Matrix *A, MPFR_Matrix *B){
+    unsigned int i, j, k;
+
+    if (A->n == B->n) {
+        int n = A->n;
+        MPFR_Matrix *mat_mult = init_MPFR_matrix(A->n);
+        for (i = 0 ; i < n ; i++)
+            for (j = 0 ; j < n ; j++){
+
+                for (k = 0 ; k < n ; k++) {
+                    mpfr_t x, y, z;
+                    mpinit(x);
+                    mpinit(y);
+                    mpinit(z);
+
+                    mpfr_set(x, mat_mult->m[i * n + j], MPFR_RNDD);
+                    mpfr_set(y, A->m[k + n * i], MPFR_RNDD);
+                    mpfr_set(z, B->m[k * n + j], MPFR_RNDD);
+
+                    mpmul(y, y, z);
+                    mpadd(mat_mult->m[i * n + j], x, y);
+
+                    mpfr_clear(x);
+                    mpfr_clear(y);
+                    mpfr_clear(z);
+                }
+            }
+        return mat_mult;
+    }
+    else {
+        printf("matrix.c/MPFR_matrix_mul : Multiplication de matrice impossible, dimensions : %d != %d", A->n, B->n);
+        return NULL;
+    }                
+}
+
+MPFR_Matrix *MPFR_matrix_transpose(MPFR_Matrix *A){
+    unsigned int i, j;
+
+    MPFR_Matrix *mat_transp = init_MPFR_matrix(A->n);
+    for(i = 0 ; i < A->n ; i++){
+        for(j = 0 ; j < A->n ; j++){
+            mpfr_set(mat_transp->m[i * A->n + j], A->m[j * A->n + i], MPFR_RNDD);
         }
     }
     return mat_transp;

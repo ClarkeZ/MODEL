@@ -14,6 +14,8 @@ double randfrom(double min, double max);
 
 double func_sqrt(double n);
 
+/* ***** ALGO ***** */
+
 double find_cos(int i, int j, Matrix *A);
 
 double find_cos_matrix(int i, int j, Matrix *A);
@@ -32,6 +34,25 @@ Matrix *quasi_hess(Matrix *A);
 
 Matrix *hessenberg(Matrix *A);
 
+/* ***** MPFR ***** */
+
+void MPFR_find_cos(int i, int j, MPFR_Matrix *A, mpfr cos);
+
+void MPFR_find_cos_matrix(int i, int j, MPFR_Matrix *A, mpfr cos);
+
+void MPFR_find_sin(int i, int j, MPFR_Matrix *A, mpfr sin);
+
+void MPFR_find_sin_matrix(int i, int j, MPFR_Matrix *A, mpfr sin);
+
+MPFR_Matrix *MPFR_givens(int i, int j, MPFR_Matrix *A);
+
+void MPFR_givens_matrix(int i, int j, MPFR_Matrix *G, MPFR_Matrix *A);
+
+MPFR_QR *MPFR_qr_decomposition(MPFR_Matrix *A);
+
+MPFR_Matrix *MPFR_quasi_hess(MPFR_Matrix *A);
+
+MPFR_Matrix *MPFR_hessenberg(MPFR_Matrix *A);
 
 
 

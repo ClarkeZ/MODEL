@@ -23,23 +23,82 @@ void test_mul(){
     printf("%f * %f = %f\n", a, b, mul(a, b));
 }
 
-// void test_mpadd(){
-//     printf(" --- TEST MPADD --- \n");
-//     mpfr a, b, c;
-//     mpinit(a);
-//     mpinit(b);
-//     mpinit(c);
+/* ***** MPFR ***** */
 
-//     mpset(a, 1.0);
-//     mpset(b, 2.0);
+void test_mpadd(){
+    printf(" --- TEST MPADD --- \n");
+    mpfr a, b, c;
+    mpinit(a);
+    mpinit(b);
+    mpinit(c);
 
-//     mpadd(c, a, b);
+    double x = randfrom(0 - rand(), rand());
+    double y = randfrom(0 - rand(), rand());
 
-//     mpfr_out_str (stdout, 10, 0, c, MPFR_RNDD);
-//     mpfr_clear(a);
-//     mpfr_clear(b);
-//     mpfr_clear(c);
-// }
+    mpset(a, x);
+    mpset(b, y);
+
+    mpadd(c, a, b);
+
+    printf("%f + %f = ", x, y);
+    mpfr_out_str(stdout, 10, 0, c, MPFR_RNDD);
+    printf("\n");
+    mpfr_printf("%f + %f = %.10Rf\n",x, y, c); // 10 digits
+
+    mpfr_clear(a);
+    mpfr_clear(b);
+    mpfr_clear(c);
+}
+
+void test_mpsub(){
+    printf(" --- TEST MPSUB --- \n");
+    mpfr a, b, c;
+    mpinit(a);
+    mpinit(b);
+    mpinit(c);
+
+    double x = randfrom(0 - rand(), rand());
+    double y = randfrom(0 - rand(), rand());
+
+    mpset(a, x);
+    mpset(b, y);
+
+    mpsub(c, a, b);
+
+    printf("%f - %f = ", x, y);
+    mpfr_out_str(stdout, 10, 0, c, MPFR_RNDD);
+    printf("\n");
+    mpfr_printf("%f - %f = %.10Rf\n",x, y, c); // 10 digits
+
+    mpfr_clear(a);
+    mpfr_clear(b);
+    mpfr_clear(c);
+}
+
+void test_mpmul(){
+    printf(" --- TEST MPMUL --- \n");
+    mpfr a, b, c;
+    mpinit(a);
+    mpinit(b);
+    mpinit(c);
+
+    double x = randfrom(0 - rand(), rand());
+    double y = randfrom(0 - rand(), rand());
+
+    mpset(a, x);
+    mpset(b, y);
+
+    mpmul(c, a, b);
+
+    printf("%f * %f = ", x, y);
+    mpfr_out_str(stdout, 10, 0, c, MPFR_RNDD);
+    printf("\n");
+    mpfr_printf("%f * %f = %.10Rf\n",x, y, c); // 10 digits
+
+    mpfr_clear(a);
+    mpfr_clear(b);
+    mpfr_clear(c);
+}
 
 /* ---------- TEST MATRIX.C ---------- */
 
@@ -150,6 +209,174 @@ void test_matrix_mul(int n){
     free_matrix(res);
 }
 
+void test_matrix_transpose(int n){
+    printf("--- TEST MATRIX_TRANSPOSE ---\n");
+    Matrix *A = init_matrix(n);
+    Matrix *res;
+    double tic, toc;
+    unsigned int i;
+
+    for (i = 0 ; i < A->n * A->n ; ++i)
+        A->m[i] = randfrom(0 - rand(), rand());
+
+    printf("--- A ---\n");
+    print_matrix(A);
+
+    tic = wtime();
+    res = matrix_transpose(A);
+    toc = wtime();
+
+    printf("--- A^T ---\n");
+    print_matrix(res);
+
+    printf("time = %f\n", toc - tic);
+
+    free_matrix(A);
+    free_matrix(res);
+}
+
+/* ***** MPFR ***** */
+
+void test_init_MPFR_matrix(int n){
+    printf("--- TEST INIT_MPFR_MATRIX ---\n");
+    MPFR_Matrix *M = init_MPFR_matrix(n);
+    print_MPFR_matrix(M);
+
+    free_MPFR_matrix(M);
+}
+
+void test_init_MPFR_eye(int n){
+    printf("--- TEST INIT_MPFR_EYE ---\n");
+    MPFR_Matrix *M = init_MPFR_eye(n);
+    print_MPFR_matrix(M);
+
+    free_MPFR_matrix(M);
+}
+
+void test_MPFR_copy_matrix(int n){
+    printf("--- TEST COPY_MPFR_MATRIX ---\n");
+    MPFR_Matrix *M = init_MPFR_matrix(n);
+    MPFR_Matrix *copy;
+    double tic, toc;
+    unsigned int i;
+
+    for (i = 0 ; i < M->n * M->n ; ++i) 
+        mpset(M->m[i], randfrom(0 - rand(), rand()));
+
+    printf("--- M AVANT ---\n");
+    print_MPFR_matrix(M);
+
+    tic = wtime();
+    copy = copy_MPFR_matrix(M);
+    toc = wtime();
+
+    printf("--- M APRES ---\n");
+    print_MPFR_matrix(M);
+    printf("--- COPIE de M ---\n");
+    print_MPFR_matrix(copy);
+
+    printf("time = %f\n", toc - tic);
+
+    free_MPFR_matrix(M);
+    free_MPFR_matrix(copy);
+}
+
+void test_MPFR_matrix_add(int n){
+    printf("--- TEST MPFR_MATRIX_ADD ---\n");
+    MPFR_Matrix *A = init_MPFR_matrix(n);
+    MPFR_Matrix *B = init_MPFR_matrix(n);
+    MPFR_Matrix *res;
+    double tic, toc;
+    unsigned int i;
+
+    for (i = 0 ; i < A->n * A->n ; ++i){
+        mpset(A->m[i], randfrom(0 - rand(), rand()));
+        mpset(B->m[i], randfrom(0 - rand(), rand()));
+    }
+    // printf("--- A ---\n");
+    // print_MPFR_matrix(A);
+    // printf("--- B ---\n");
+    // print_MPFR_matrix(B);
+
+    tic = wtime();
+    res = MPFR_matrix_add(A, B);
+    toc = wtime();
+
+    // printf("--- A + B ---\n");
+    // print_MPFR_matrix(res);
+
+    printf("time = %f\n", toc - tic);
+
+    free_MPFR_matrix(A);
+    free_MPFR_matrix(B);
+    free_MPFR_matrix(res);
+}
+
+void test_MPFR_matrix_mul(int n){
+    printf("--- TEST MPFR_MATRIX_MUL ---\n");
+    MPFR_Matrix *A = init_MPFR_matrix(n);
+    MPFR_Matrix *B = init_MPFR_matrix(n);
+    MPFR_Matrix *res;
+    double tic, toc;
+    unsigned int i;
+
+    for (i = 0 ; i < A->n * A->n ; ++i){
+        // mpset(A->m[i], randfrom(0 - rand(), rand()));
+        // mpset(B->m[i], randfrom(0 - rand(), rand()));
+        // mpset(A->m[i], randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN)));
+        // mpset(B->m[i], randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN)));
+        mpset(A->m[i], rand() % (MAX-MIN));
+        mpset(B->m[i], rand() % (MAX-MIN));
+    }
+    printf("--- A ---\n");
+    print_MPFR_matrix(A);
+    printf("--- B ---\n");
+    print_MPFR_matrix(B);
+
+    tic = wtime();
+    res = MPFR_matrix_mul(A, B);
+    toc = wtime();
+
+    printf("--- A * B ---\n");
+    print_MPFR_matrix(res);
+
+    printf("time = %f\n", toc - tic);
+
+    free_MPFR_matrix(A);
+    free_MPFR_matrix(B);
+    free_MPFR_matrix(res);
+}
+
+void test_MPFR_matrix_transpose(int n){
+    printf("--- TEST MPFR_MATRIX_TRANSPOSE ---\n");
+    MPFR_Matrix *A = init_MPFR_matrix(n);
+    MPFR_Matrix *res;
+    double tic, toc;
+    unsigned int i;
+
+    for (i = 0 ; i < A->n * A->n ; ++i){
+        // mpset(A->m[i], randfrom(0 - rand(), rand()));
+        // mpset(A->m[i], randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN)));
+        mpset(A->m[i], rand() % (MAX-MIN));
+    }
+    printf("--- A ---\n");
+    print_MPFR_matrix(A);
+
+    tic = wtime();
+    res = MPFR_matrix_transpose(A);
+    toc = wtime();
+
+    printf("--- A^T ---\n");
+    print_MPFR_matrix(res);
+
+    printf("time = %f\n", toc - tic);
+
+    free_MPFR_matrix(A);
+    free_MPFR_matrix(res);
+}
+
+/* ---------- TEST ALGO.C ---------- */
+
 void test_qr_decomposition(int n){
     printf("--- TEST QR_DECOMPOSITION ---\n");
     Matrix *M = init_matrix(n);
@@ -241,4 +468,98 @@ void test_hessenberg(int n){
 
     free_matrix(M);
     free_matrix(hess);
+}
+
+/* ***** MPFR ***** */
+
+void test_MPFR_qr_decomposition(int n){
+    printf("--- TEST MPFR QR_DECOMPOSITION ---\n");
+    MPFR_Matrix *M = init_MPFR_matrix(n);
+    MPFR_QR *qr = (MPFR_QR *) malloc(sizeof(MPFR_QR));
+    int i;
+    double tic, toc;
+
+    for (i = 0 ; i < n * n ; ++i) 
+        // mpset(M->m[i], randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN)));
+        mpset(M->m[i], rand() % (MAX-MIN)); // Pour des entiers
+
+    printf("--- AVANT ---\n");
+    print_MPFR_matrix(M);
+    
+    tic = wtime();
+    qr = MPFR_qr_decomposition(M);
+    toc = wtime();
+
+    printf("--- APRES ---\n");
+    printf("--- Q ---\n");
+    print_MPFR_matrix(qr->Q);
+    printf("--- R ---\n");
+    print_MPFR_matrix(qr->R);
+
+    printf("--- VERIF = AVANT ---\n");
+    MPFR_Matrix *tmp_qr = MPFR_matrix_mul(qr->Q, qr->R);
+    print_MPFR_matrix(tmp_qr);
+
+    free_MPFR_matrix(tmp_qr);
+
+    printf("\ntime = %f\n", toc - tic);
+
+    free_MPFR_matrix(M);
+    free_MPFR_qr(qr);
+}
+
+void test_MPFR_quasi_hess(int n){
+    printf("--- TEST MPFR QUASI HESSENBERG ---\n");
+    MPFR_Matrix *M = init_MPFR_matrix(n);
+    MPFR_Matrix *hess = init_MPFR_matrix(n);
+    int i;
+    double tic, toc;
+
+    for (i = 0 ; i < n * n ; ++i) 
+        // mpset(M->m[i], randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN)));
+        mpset(M->m[i], rand() % (MAX-MIN)); // Pour des entiers
+
+    printf("--- AVANT ---\n");
+    print_MPFR_matrix(M);
+
+    tic = wtime();
+    hess = MPFR_quasi_hess(M);
+    toc = wtime();
+
+    printf("--- APRES ---\n");
+    printf("--- QUASI HESSENBERG ---\n");
+    print_MPFR_matrix(hess);
+
+    printf("\ntime = %f\n", toc - tic);
+
+    free_MPFR_matrix(M);
+    free_MPFR_matrix(hess);
+}
+
+void test_MPFR_hessenberg(int n){
+    printf("--- TEST MPFR HESSENBERG ---\n");
+    MPFR_Matrix *M = init_MPFR_matrix(n);
+    MPFR_Matrix *hess = init_MPFR_matrix(n);
+    int i;
+    double tic, toc;
+
+    for (i = 0 ; i < n * n ; ++i) 
+        // mpset(M->m[i], randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN)));
+        mpset(M->m[i], rand() % (MAX-MIN)); // Pour des entiers
+
+    printf("--- AVANT ---\n");
+    print_MPFR_matrix(M);
+
+    tic = wtime();
+    hess = MPFR_hessenberg(M);
+    toc = wtime();
+
+    printf("--- APRES ---\n");
+    printf("--- HESSENBERG ---\n");
+    print_MPFR_matrix(hess);
+
+    printf("\ntime = %f\n", toc - tic);
+
+    free_MPFR_matrix(M);
+    free_MPFR_matrix(hess);
 }

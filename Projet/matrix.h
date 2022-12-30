@@ -31,54 +31,46 @@ Matrix *matrix_add(Matrix *A, Matrix *B);
 
 Matrix *matrix_transpose(Matrix *A);
 
-Matrix *matrix_inverse(Matrix *A);
-
 
 /* ===== Fonctions MPFR ===== */
 
-// typedef struct MPFR_Matrix
-// {
-//     mpfr *m;     // matrice  M
-//     int n;      // Taille de la matrice, pour une matrice carree
-// } MPFR_Matrix;
+typedef struct MPFR_Matrix
+{
+    mpfr *m;     // matrice  M
+    int n;      // Taille de la matrice, pour une matrice carree
+} MPFR_Matrix;
 
-// typedef struct MPFR_QR
-// {
-//     MPFR_Matrix *Q;
-//     MPFR_Matrix *R;
-// } MPFR_QR;
+typedef struct MPFR_QR
+{
+    MPFR_Matrix *Q;
+    MPFR_Matrix *R;
+} MPFR_QR;
 
 /* Initialise une matrice de taille n*n */
-// MPFR_Matrix *init_MPFR_matrix(int n);
+MPFR_Matrix *init_MPFR_matrix(int n);
 
 /* Initialise une matrice identite de taille n*n */
-// MPFR_Matrix *init_MPFR_eye(int n);
+MPFR_Matrix *init_MPFR_eye(int n);
 
 /* Libere la memoire */
-// void free_MPFR_matrix(Matrix *m);
+void free_MPFR_matrix(MPFR_Matrix *m);
 
 /* Libere la memoire */
-// void free_MPFR_qr(QR *qr);
-
-/* Copie la matrice */
-// MPFR_Matrix *copy_MPFR_matrix(Matrix *M);
+void free_MPFR_qr(MPFR_QR *qr);
 
 /* Affiche la matrice */
-// void print_MPFR_matrix(Matrix *M);
+void print_MPFR_matrix(MPFR_Matrix *M);
+
+/* Copie la matrice */
+MPFR_Matrix *copy_MPFR_matrix(MPFR_Matrix *M);
 
 /* Addition de deux matrices */
-// MPFR_Matrix *matrix_MPFR_add(Matrix* A, Matrix* B);
-
-/* Soustraction de deux matrices */
-// MPFR_Matrix *matrix_MPFR_sub(Matrix* A, Matrix* B);
+MPFR_Matrix *MPFR_matrix_add(MPFR_Matrix* A, MPFR_Matrix* B);
 
 /* Multiplication naive de deux matrices */
-// MPFR_Matrix *matrix_MPFR_mul(Matrix *A, Matrix *B);
+MPFR_Matrix *MPFR_matrix_mul(MPFR_Matrix *A, MPFR_Matrix *B);
 
-/* Multiplication d'une matrice par un scalaire */
-// MPFR_Matrix *matrix_mul_MPFR_coef(Matrix *A, mpfr c);
-
-/* Multiplication d'une matrice par un vecteur */
-// mpfr *matrix_mul_MPFR_vector(Matrix *A, mpfr *v);
+/* Transpose d'une matrice */
+MPFR_Matrix *MPFR_matrix_transpose(MPFR_Matrix *A);
 
 #endif // matrix_H

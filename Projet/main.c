@@ -1,5 +1,6 @@
 #include "algo.h"
 #include "unit_test.h"
+#include "benchmark.h"
 
 int main(){
     int n = 6;
@@ -8,17 +9,9 @@ int main(){
     test_matrix(n);
     test_algo(n);
 
-    // mpfr n;
-    // mpfr_init2(n, 200);
-    // mpfr_set_d(n, 2.0, MPFR_RNDD);
-    // Matrix *mat = init_matrix(n);
-    // mpfr_out_str (stdout, 10, 0, mat->n, MPFR_RNDD);
-    // mpfr_out_str (stdout, 10, 0, mat->m[0], MPFR_RNDD);
-    // mpfr_out_str (stdout, 10, 0, mat->m[1], MPFR_RNDD);
-    // mpfr_out_str (stdout, 10, 0, mat->m[2], MPFR_RNDD);
-    // mpfr_out_str (stdout, 10, 0, mat->m[3], MPFR_RNDD);
-    // free_matrix(mat);
+    // benchmark_quasi_hess_vs_hessenberg(10, 2);
+    benchmark_MPFR_quasi_hess_vs_hessenberg(10, 2);
 
-    // mpfr_clear(n);
+   
     return 0;
 }
