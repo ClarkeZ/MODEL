@@ -95,6 +95,7 @@ void print_matrix(Matrix *mat){
     for (i = 0; i < mat->n; ++i) {
         for (j = 0; j < mat->n; ++j) {
             printf("%f ", mat->m[i * mat->n + j]);
+            fflush(stdout);
         }
         printf("\n");
     }
@@ -231,9 +232,11 @@ void print_MPFR_matrix(MPFR_Matrix *mat){
             // mpfr_out_str(stdout, 10, 0, mat->m[i * mat->n + j], MPFR_RNDD);
             // printf(" ");
             mpfr_printf("%.10Rf ", mat->m[i * mat->n + j]); // 10 digits
+            fflush(stdout); // Permet de vider le buffer de sortie standard, sinon le printf n'affiche pas tout
         }
         printf("\n");
     }
+    fflush(stdout);
 }
 
 MPFR_Matrix *copy_MPFR_matrix(MPFR_Matrix *M){
