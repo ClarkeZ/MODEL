@@ -32,6 +32,8 @@ void test_matrix(int n){
 
     // test_matrix_mul(n);
 
+    // test_matrix_sub(n);
+
     // test_matrix_transpose(n);
 
     /* ***** MPFR ***** */
@@ -43,6 +45,8 @@ void test_matrix(int n){
     // test_MPFR_copy_matrix(n);
 
     // test_MPFR_matrix_add(n);
+
+    // test_MPFR_matrix_sub(n);
 
     // test_MPFR_matrix_mul(n);
 
@@ -59,6 +63,8 @@ void test_algo(int n){
 
     // test_hessenberg(n);
 
+    // test_eigenvalues(n);
+
     /* ***** MPFR ***** */
 
     // test_MPFR_qr_decomposition(n);
@@ -67,4 +73,5 @@ void test_algo(int n){
 
     // test_MPFR_hessenberg(n);
 
+    test_MPFR_eigenvalues(n);
 }

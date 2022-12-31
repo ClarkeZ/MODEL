@@ -19,7 +19,7 @@ void choix_bench(){
 int main(int argc, char *argv[]){
     srand(time(NULL));
     
-    int n = 6;
+    int n = 12;
     unsigned int ite = 1;
 
     /* ----- AFFECTATION DES VALEURS -----*/

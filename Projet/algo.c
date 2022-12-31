@@ -145,7 +145,6 @@ Matrix *quasi_hess(Matrix *A){
     
     // Nombre d'iterations max pour la boucle while (pour eviter les boucles infinies)
     unsigned int it = 0;
-    unsigned int nb_it = 100; 
     
     double threshold = 1e-4;
     // double threshold = 0.5;
@@ -160,7 +159,7 @@ Matrix *quasi_hess(Matrix *A){
         lower_diag[i] = A->m[(i + 1)*A->n + i];
     }
 
-    while(it != nb_it){
+    while(it != NB_ITE){
         // Juste pour afficher si le nombre max d'iteration est atteint
         // if(it == nb_it-1) 
         //     printf("Trop d'iterations\n");
@@ -223,6 +222,58 @@ Matrix *hessenberg(Matrix *A){
         }
     }
     return hess;
+}
+
+double matrix_distance(Matrix *A, Matrix *B){
+    if(A->n != B->n){
+        printf("Error: matrix_distance: A->n != B->n\n");
+        exit(EXIT_FAILURE);
+    }   
+
+    double dist = 0;
+    for(int i = 0 ; i < A->n ; i++){
+        for(int j = 0 ; j < A->n ; j++){
+            dist += abs(A->m[i*A->n + j] - B->m[i*A->n + j]);
+        }
+    }
+    return dist;
+}
+
+double *eigenvalues(Matrix *A){
+    double *eigen = (double *) malloc(A->n * sizeof(double));
+
+    QR *qr;
+    Matrix *A_prime = copy_matrix(A);
+    // Matrix *tmp;
+
+    int i = 0;
+    
+    // k Nombre d'iterations, plus k est grand, plus la precision est bonne
+    // Mais plus la matrice est grande, plus k doit etre grand (encore plus que pour une petite matrice)
+    // Car on fait k fois la decomposition QR sur la matrice A
+    // Donc plus A, a de chance de converger vers une matrice diagonale 
+    int k = 20; 
+    while(i < k){
+        qr = qr_decomposition(A_prime);
+        // Matrix *Qt = matrix_transpose(qr->Q);
+        // tmp = matrix_mul(A_prime, qr->Q);
+        // A_prime = matrix_mul(Qt, tmp);
+
+
+        // Faire RQ revient a faire Q*AR
+        A_prime = matrix_mul(qr->R, qr->Q);
+
+        // free_matrix(tmp);
+        // free_matrix(Qt);
+        free_qr(qr);
+        i++;
+    }
+
+    for(int i = 0 ; i < A->n ; i++){
+        eigen[i] = A_prime->m[i*A->n + i];
+    }
+
+    return eigen;
 }
 
 
@@ -413,7 +464,6 @@ MPFR_Matrix *MPFR_quasi_hess(MPFR_Matrix *A){
     
     // Nombre d'iterations max pour la boucle while (pour eviter les boucles infinies)
     unsigned int it = 0;
-    unsigned int nb_it = 100; 
 
     mpfr threshold;
     mpinit(threshold);
@@ -429,7 +479,7 @@ MPFR_Matrix *MPFR_quasi_hess(MPFR_Matrix *A){
         mpfr_set(lower_diag[i], A->m[(i + 1)*A->n + i], MPFR_RNDN);
     }
 
-    while(it != nb_it){
+    while(it != NB_ITE){
         // if(it == nb_it-1) // Juste pour afficher le message
         //     printf("Trop d'iterations\n");
         
@@ -495,4 +545,23 @@ MPFR_Matrix *MPFR_hessenberg(MPFR_Matrix *A){
     }
 
     return hess;
+}
+
+void MPFR_eigenvalues(MPFR_Matrix *A, mpfr *eigen){
+    MPFR_QR *qr;
+    MPFR_Matrix *A_prime = copy_MPFR_matrix(A);
+
+    int i = 0;
+    int k = 20; 
+    while(i < k){
+        qr = MPFR_qr_decomposition(A_prime);
+
+        A_prime = MPFR_matrix_mul(qr->R, qr->Q);
+
+        free_MPFR_qr(qr);
+        i++;
+    }
+    for(int i = 0 ; i < A->n ; i++){
+        mpfr_set(eigen[i], A_prime->m[i*A->n + i], MPFR_RNDN);
+    }
 }

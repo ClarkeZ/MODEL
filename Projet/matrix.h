@@ -29,6 +29,8 @@ Matrix *matrix_mul(Matrix *A, Matrix *B);
 
 Matrix *matrix_add(Matrix *A, Matrix *B);
 
+Matrix *matrix_sub(Matrix *A, Matrix *B);
+
 Matrix *matrix_transpose(Matrix *A);
 
 
@@ -66,6 +68,9 @@ MPFR_Matrix *copy_MPFR_matrix(MPFR_Matrix *M);
 
 /* Addition de deux matrices */
 MPFR_Matrix *MPFR_matrix_add(MPFR_Matrix* A, MPFR_Matrix* B);
+
+/* Soustraction de deux matrices */
+MPFR_Matrix *MPFR_matrix_sub(MPFR_Matrix* A, MPFR_Matrix* B);
 
 /* Multiplication naive de deux matrices */
 MPFR_Matrix *MPFR_matrix_mul(MPFR_Matrix *A, MPFR_Matrix *B);

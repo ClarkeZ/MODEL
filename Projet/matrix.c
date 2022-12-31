@@ -125,6 +125,22 @@ Matrix *matrix_add(Matrix *A, Matrix *B){
 }
 
 
+Matrix *matrix_sub(Matrix *A, Matrix *B){
+    unsigned int i;
+
+    if (A->n == B->n) {
+        Matrix *mat_sub = init_matrix(A->n);
+        for (i = 0 ; i < A->n * A->n ; ++i) {
+            mat_sub->m[i] = sub(A->m[i], B->m[i]);
+        }
+        return mat_sub;   
+    }
+    else {
+        printf("Soustraction de matrice impossible, dimensions : %d != %d", A->n, B->n);
+        return NULL;
+    }
+}
+
 
 /*
 Multiplication naive de deux matrices (A*B)
@@ -261,6 +277,22 @@ MPFR_Matrix *MPFR_matrix_add(MPFR_Matrix *A, MPFR_Matrix *B){
     }
     else{
         printf("matrix.c/MPFR_matrix_add : Les matrices n'ont pas la meme taille !\n");
+        return NULL;
+    }
+}
+
+MPFR_Matrix *MPFR_matrix_sub(MPFR_Matrix *A, MPFR_Matrix *B){
+    unsigned int i;
+
+    if(A->n == B->n){
+        MPFR_Matrix *mat_sub = init_MPFR_matrix(A->n);
+        for (i = 0; i < A->n * A->n; ++i) {
+            mpsub(mat_sub->m[i], A->m[i], B->m[i]);
+        }
+        return mat_sub;
+    }
+    else{
+        printf("matrix.c/MPFR_matrix_sub : Les matrices n'ont pas la meme taille !\n");
         return NULL;
     }
 }

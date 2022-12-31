@@ -8,6 +8,8 @@
 
 #include "matrix.h"
 
+#define NB_ITE 30
+
 double wtime();
 
 double randfrom(double min, double max);
@@ -34,6 +36,8 @@ Matrix *quasi_hess(Matrix *A);
 
 Matrix *hessenberg(Matrix *A);
 
+double *eigenvalues(Matrix *A);
+
 /* ***** MPFR ***** */
 
 void MPFR_find_cos(int i, int j, MPFR_Matrix *A, mpfr cos);
@@ -54,6 +58,6 @@ MPFR_Matrix *MPFR_quasi_hess(MPFR_Matrix *A);
 
 MPFR_Matrix *MPFR_hessenberg(MPFR_Matrix *A);
 
-
+void MPFR_eigenvalues(MPFR_Matrix *A, mpfr *eigen);
 
 
