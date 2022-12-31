@@ -1,6 +1,5 @@
 #include "matrix.h"
 
-
 /*
 Initialise une matrice carree de taille n et remplie de 0
 @param n : la taille de la matrice
@@ -32,7 +31,7 @@ Initialise une matrice identite de taille n*n
 @return une matrice identite de taille n*n 
 */
 Matrix *init_eye(int n) {
-    unsigned int i;
+    int i;
     
     Matrix *mat = malloc(sizeof(Matrix));
 
@@ -56,6 +55,7 @@ Matrix *init_eye(int n) {
 
 /*
 Libere la memoire allouee a une structure Matrix
+@param mat : la matrice a liberer
 */
 void free_matrix(Matrix *mat){
     free(mat->m);
@@ -63,14 +63,14 @@ void free_matrix(Matrix *mat){
 }
 
 /*
-Libere la memoire allouee a une structure QR
+Libere la memoire allouee a une structure 
+@param qr : la structure qr a liberer
 */
 void free_qr(QR *qr){
     free_matrix(qr->Q);
     free_matrix(qr->R);
     free(qr);
 }
-
 
 /*
 Copie une matrice dans une nouvelle matrice
@@ -87,11 +87,11 @@ Matrix *copy_matrix(Matrix *M){
 }
 
 /*
-Affiche une matrice
+Affiche la matrice
 @param M : la matrice a afficher
 */
 void print_matrix(Matrix *mat){
-    unsigned int i, j;
+    int i, j;
     for (i = 0; i < mat->n; ++i) {
         for (j = 0; j < mat->n; ++j) {
             printf("%f ", mat->m[i * mat->n + j]);
@@ -109,7 +109,7 @@ Additionne deux matrices (A+B)
 @return la matrice A+B
 */
 Matrix *matrix_add(Matrix *A, Matrix *B){
-    unsigned int i;
+    int i;
 
     if(A->n == B->n){
         Matrix *mat_add = init_matrix(A->n);
@@ -124,9 +124,15 @@ Matrix *matrix_add(Matrix *A, Matrix *B){
     }
 }
 
+/*
+Soustraction de deux matrices (A-B)
+@param A : la premiere matrice
+@param B : la deuxieme matrice
 
+@return la matrice A-B
+*/
 Matrix *matrix_sub(Matrix *A, Matrix *B){
-    unsigned int i;
+    int i;
 
     if (A->n == B->n) {
         Matrix *mat_sub = init_matrix(A->n);
@@ -150,7 +156,7 @@ Multiplication naive de deux matrices (A*B)
 @return la matrice A*B
 */
 Matrix *matrix_mul(Matrix *A, Matrix *B) {
-    unsigned int i, j, k;
+    int i, j, k;
 
     if (A->n == B->n) {
         int n = A->n;
@@ -181,7 +187,7 @@ Transpose une matrice A
 @return la matrice A transposee
 */
 Matrix *matrix_transpose(Matrix *A){
-    unsigned int i, j;
+    int i, j;
 
     Matrix *mat_transp = init_matrix(A->n);
     for(i = 0 ; i < A->n ; i++){
@@ -194,6 +200,13 @@ Matrix *matrix_transpose(Matrix *A){
 
 /* ***** MPFR ***** */
 
+/*
+Initialise une matrice carree de taille n et remplie de 0
+En utilisant la librairie MPFR
+@param n : la taille de la matrice
+
+@return une matrice de coefficient initialise a 0 de taille n*n 
+*/
 MPFR_Matrix *init_MPFR_matrix(int n){
     MPFR_Matrix *mat = malloc(sizeof(MPFR_Matrix));
 
@@ -218,6 +231,13 @@ MPFR_Matrix *init_MPFR_matrix(int n){
     return mat;
 }
 
+/*
+Initialise une matrice identite de taille n*n
+En utilisant la librairie MPFR
+@param n : la taille de la matrice
+
+@return une matrice identite de taille n*n 
+*/
 MPFR_Matrix *init_MPFR_eye(int n){
     MPFR_Matrix *mat = init_MPFR_matrix(n);
 
@@ -227,6 +247,11 @@ MPFR_Matrix *init_MPFR_eye(int n){
     return mat;
 }
 
+/*
+Libere la memoire allouee a une structure Matrix
+En utilisant la librairie MPFR
+@param mat : la matrice a liberer
+*/
 void free_MPFR_matrix(MPFR_Matrix *mat){
     for (int i = 0; i < mat->n * mat->n; i++) {
         mpfr_clear(mat->m[i]);
@@ -235,14 +260,23 @@ void free_MPFR_matrix(MPFR_Matrix *mat){
     free(mat);
 }
 
+/*
+Libere la memoire allouee a une structure 
+@param qr : la structure qr a liberer
+*/
 void free_MPFR_qr(MPFR_QR *qr){
     free_MPFR_matrix(qr->Q);
     free_MPFR_matrix(qr->R);
     free(qr);
 }
 
+/*
+Affiche la matrice
+En utilisant la librairie MPFR
+@param M : la matrice a afficher
+*/
 void print_MPFR_matrix(MPFR_Matrix *mat){
-    unsigned int i, j;
+    int i, j;
     for (i = 0; i < mat->n; ++i) {
         for (j = 0; j < mat->n; ++j) {
             // mpfr_out_str(stdout, 10, 0, mat->m[i * mat->n + j], MPFR_RNDD);
@@ -255,6 +289,13 @@ void print_MPFR_matrix(MPFR_Matrix *mat){
     fflush(stdout);
 }
 
+/*
+Copie une matrice dans une nouvelle matrice
+En utilisant la librairie MPFR
+@param M : la matrice a copier
+
+@return une copie de la matrice M
+*/
 MPFR_Matrix *copy_MPFR_matrix(MPFR_Matrix *M){
     MPFR_Matrix *copy = init_MPFR_matrix(M->n);
 
@@ -265,8 +306,16 @@ MPFR_Matrix *copy_MPFR_matrix(MPFR_Matrix *M){
     return copy;
 }
 
+/*
+Additionne deux matrices (A+B)
+En utilisant la librairie MPFR
+@param A : la premiere matrice
+@param B : la deuxieme matrice
+
+@return la matrice A+B
+*/
 MPFR_Matrix *MPFR_matrix_add(MPFR_Matrix *A, MPFR_Matrix *B){
-    unsigned int i;
+    int i;
 
     if(A->n == B->n){
         MPFR_Matrix *mat_add = init_MPFR_matrix(A->n);
@@ -281,8 +330,16 @@ MPFR_Matrix *MPFR_matrix_add(MPFR_Matrix *A, MPFR_Matrix *B){
     }
 }
 
+/*
+Soustraction de deux matrices (A-B)
+En utilisant la librairie MPFR
+@param A : la premiere matrice
+@param B : la deuxieme matrice
+
+@return la matrice A-B
+*/
 MPFR_Matrix *MPFR_matrix_sub(MPFR_Matrix *A, MPFR_Matrix *B){
-    unsigned int i;
+    int i;
 
     if(A->n == B->n){
         MPFR_Matrix *mat_sub = init_MPFR_matrix(A->n);
@@ -297,8 +354,16 @@ MPFR_Matrix *MPFR_matrix_sub(MPFR_Matrix *A, MPFR_Matrix *B){
     }
 }
 
+/*
+Multiplication de deux matrices (A*B)
+En utilisant la librairie MPFR
+@param A : la premiere matrice
+@param B : la deuxieme matrice
+
+@return la matrice A*B
+*/
 MPFR_Matrix *MPFR_matrix_mul(MPFR_Matrix *A, MPFR_Matrix *B){
-    unsigned int i, j, k;
+    int i, j, k;
 
     if (A->n == B->n) {
         int n = A->n;
@@ -332,8 +397,14 @@ MPFR_Matrix *MPFR_matrix_mul(MPFR_Matrix *A, MPFR_Matrix *B){
     }                
 }
 
+/*
+Transpose une matrice A
+@param A : la matrice a transposer
+
+@return la matrice A transposee
+*/
 MPFR_Matrix *MPFR_matrix_transpose(MPFR_Matrix *A){
-    unsigned int i, j;
+    int i, j;
 
     MPFR_Matrix *mat_transp = init_MPFR_matrix(A->n);
     for(i = 0 ; i < A->n ; i++){

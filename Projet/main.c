@@ -1,4 +1,3 @@
-// #include "algo.h"
 #include "unit_test.h"
 #include "benchmark.h"
 
@@ -12,14 +11,16 @@ void choix_bench(){
     printf("        => double precision vs MPFR\n");
     printf(" 5 - Comparaison des différents algorithmes rendant une matrice Hessenberg supérieure\n");
     printf("        => double precision vs MPFR\n");
-    printf(" 6 - Quitter\n");
+    printf(" 6 - Comparaison des valeurs propres (double précision)\n");
+    printf(" 7 - Comparaison des valeurs propres (MPFR)\n");
+    printf(" 8 - Quitter\n");
     printf("\n Votre choix :\n");
 }
 
 int main(int argc, char *argv[]){
     srand(time(NULL));
     
-    int n = 12;
+    int n = 4;
     unsigned int ite = 1;
 
     /* ----- AFFECTATION DES VALEURS -----*/
@@ -65,7 +66,7 @@ int main(int argc, char *argv[]){
     fflush(stdout);
     scanf("%d", &choix);
 
-    while(choix >= 1 || choix < 6){
+    while(choix >= 1 || choix < 8){
         switch(choix){
             case 1:
                 benchmark_quasi_hess_vs_hessenberg(n, ite);
@@ -83,12 +84,18 @@ int main(int argc, char *argv[]){
                 benchmark_hessenberg(n, ite);
                 break;
             case 6:
+                test_eigenvalues(n);
+                break;
+            case 7:
+                test_MPFR_eigenvalues(n);
+                break;
+            case 8:
                 return EXIT_SUCCESS;
             default:
                 printf("Veuillez choisir un nombre entre 1 et 6\n");
                 break;
         }
-        if(choix != 6){
+        if(choix != 8){
             choix_bench();
             fflush(stdout);
             scanf("%d", &choix);

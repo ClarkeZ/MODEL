@@ -14,10 +14,19 @@ double mul(double a, double b) {
     return a * b;
 }
 
+/*
+Initialisation d'un nombre flottant de grande precision
+@param a : le nombre a initialiser
+*/
 void mpinit(mpfr a){
     mpfr_init2(a, PRECISION);
 }
 
+/*
+Set d'un nombre flottant de grande precision
+@param a : le nombre à initialiser
+@param b : le nombre à mettre dans a
+*/
 void mpset(mpfr a, double b){
     mpfr_set_d(a, b, MPFR_RNDD);
 }
@@ -51,4 +60,3 @@ Multiplication de deux nombres flottants de grande precision
 void mpmul(mpfr res, mpfr a, mpfr b){
     mpfr_mul(res, a, b, MPFR_RNDN);
 }
-

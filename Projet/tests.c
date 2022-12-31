@@ -440,7 +440,7 @@ void test_MPFR_matrix_transpose(int n){
 /* ---------- TEST ALGO.C ---------- */
 
 void test_qr_decomposition(int n){
-    printf("--- TEST QR_DECOMPOSITION ---\n");
+    printf("--- TEST QR_DECOMPOSITION (DOUBLE PRECISION) ---\n");
     Matrix *M = init_matrix(n);
     QR *qr = (QR *) malloc(sizeof(QR));
     int i;
@@ -476,7 +476,7 @@ void test_qr_decomposition(int n){
 }
 
 void test_quasi_hess(int n){
-    printf("--- TEST QUASI HESSENBERG ---\n");
+    printf("--- TEST QUASI HESSENBERG (DOUBLE PRECISION) ---\n");
     Matrix *M = init_matrix(n);
     Matrix *hess = init_matrix(n);
     int i;
@@ -504,7 +504,7 @@ void test_quasi_hess(int n){
 }
 
 void test_hessenberg(int n){
-    printf("--- TEST HESSENBERG ---\n");
+    printf("--- TEST HESSENBERG (DOUBLE PRECISION) ---\n");
     Matrix *M = init_matrix(n);
     Matrix *hess = init_matrix(n);
     int i;
@@ -533,22 +533,23 @@ void test_hessenberg(int n){
 }
 
 void test_eigenvalues(int n){
-    printf("--- TEST EIGENVALUE ---\n");
+    printf("--- TEST EIGENVALUE (DOUBLE PRECISION) ---\n");
     Matrix *M = init_matrix(n);
     int i;
+    int k = 20;
     double tic, toc;
 
     for (i = 0 ; i < n * n ; ++i) 
         // M->m[i] = randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN));
         M->m[i] = rand() % (MAX-MIN); // Pour des entiers
 
-    printf("--- MATRICE A ---\n");
-    print_matrix(M);
     Matrix *hess = hessenberg(M);
     Matrix *quasi_h = quasi_hess(M);
 
+    printf("--- MATRICE A ---\n");
+    print_matrix(M);
     tic = wtime();
-    double *eigen = eigenvalues(M);
+    double *eigen = eigenvalues(M, k);
     toc = wtime();
     free_matrix(M);
     
@@ -562,7 +563,7 @@ void test_eigenvalues(int n){
     printf("\n--- MATRICE QUASI HESSENBERG ---\n");
     print_matrix(quasi_h);
     tic = wtime();
-    double *eigen_quasi_h = eigenvalues(quasi_h);
+    double *eigen_quasi_h = eigenvalues(quasi_h, k);
     toc = wtime();
     free_matrix(quasi_h);
 
@@ -576,7 +577,7 @@ void test_eigenvalues(int n){
     printf("\n--- MATRICE HESSENBERG ---\n");
     print_matrix(hess);
     tic = wtime();
-    double *eigen_hess = eigenvalues(hess);
+    double *eigen_hess = eigenvalues(hess, k);
     toc = wtime();
     free_matrix(hess);
 
@@ -595,7 +596,7 @@ void test_eigenvalues(int n){
 /* ***** MPFR ***** */
 
 void test_MPFR_qr_decomposition(int n){
-    printf("--- TEST MPFR QR_DECOMPOSITION ---\n");
+    printf("--- TEST QR_DECOMPOSITION (MPFR) ---\n");
     MPFR_Matrix *M = init_MPFR_matrix(n);
     MPFR_QR *qr = (MPFR_QR *) malloc(sizeof(MPFR_QR));
     int i;
@@ -631,7 +632,7 @@ void test_MPFR_qr_decomposition(int n){
 }
 
 void test_MPFR_quasi_hess(int n){
-    printf("--- TEST MPFR QUASI HESSENBERG ---\n");
+    printf("--- TEST QUASI HESSENBERG (MPFR) ---\n");
     MPFR_Matrix *M = init_MPFR_matrix(n);
     MPFR_Matrix *hess = init_MPFR_matrix(n);
     int i;
@@ -688,9 +689,10 @@ void test_MPFR_hessenberg(int n){
 
 
 void test_MPFR_eigenvalues(int n){
-    printf("--- TEST MPFR EIGENVALUES ---\n");
+    printf("--- TEST EIGENVALUES (MPFR) ---\n");
     MPFR_Matrix *M = init_MPFR_matrix(n);
     int i;
+    int k = 20;
     double tic, toc;
 
     mpfr *eigen = (mpfr *) malloc(n * sizeof(mpfr));
@@ -706,13 +708,13 @@ void test_MPFR_eigenvalues(int n){
         // mpset(M->m[i], randfrom(0 - rand() % (MAX - MIN), rand() % (MAX - MIN)));
         mpset(M->m[i], rand() % (MAX-MIN)); // Pour des entiers
 
-    printf("--- MATRICE A ---\n");
-    print_MPFR_matrix(M);
     MPFR_Matrix *hess = MPFR_hessenberg(M);
     MPFR_Matrix *quasi_h = MPFR_quasi_hess(M);
-
+    
+    printf("--- MATRICE A ---\n");
+    print_MPFR_matrix(M);
     tic = wtime();
-    MPFR_eigenvalues(M, eigen);
+    MPFR_eigenvalues(M, eigen, k);
     toc = wtime();
     free_MPFR_matrix(M);
     
@@ -725,7 +727,7 @@ void test_MPFR_eigenvalues(int n){
     printf("\n--- MATRICE QUASI HESSENBERG ---\n");
     print_MPFR_matrix(quasi_h);
     tic = wtime();
-    MPFR_eigenvalues(quasi_h, eigen_quasi_h);
+    MPFR_eigenvalues(quasi_h, eigen_quasi_h, k);
     toc = wtime();
     free_MPFR_matrix(quasi_h);
 
@@ -738,7 +740,7 @@ void test_MPFR_eigenvalues(int n){
     printf("\n--- MATRICE HESSENBERG ---\n");
     print_MPFR_matrix(hess);
     tic = wtime();
-    MPFR_eigenvalues(hess, eigen_h);
+    MPFR_eigenvalues(hess, eigen_h, k);
     toc = wtime();
     free_MPFR_matrix(hess);
 

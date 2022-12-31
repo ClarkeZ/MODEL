@@ -1,4 +1,4 @@
-// #ifndef ALGO_H_
+#ifndef ALGO_H_
 #define ALGO_H_
 
 #include <stdbool.h>
@@ -36,7 +36,7 @@ Matrix *quasi_hess(Matrix *A);
 
 Matrix *hessenberg(Matrix *A);
 
-double *eigenvalues(Matrix *A);
+double *eigenvalues(Matrix *A, int k);
 
 /* ***** MPFR ***** */
 
@@ -58,6 +58,6 @@ MPFR_Matrix *MPFR_quasi_hess(MPFR_Matrix *A);
 
 MPFR_Matrix *MPFR_hessenberg(MPFR_Matrix *A);
 
-void MPFR_eigenvalues(MPFR_Matrix *A, mpfr *eigen);
+void MPFR_eigenvalues(MPFR_Matrix *A, mpfr *eigen, int k);
 
-
+#endif /* ALGO_H_ */

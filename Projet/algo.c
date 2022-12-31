@@ -14,6 +14,12 @@ double randfrom(double min, double max)
     return min + (rand() / div);
 }
 
+/*
+Calcul la racine carrée d'un nombre n
+@param n : un double
+
+@return un double qui est la racine carrée de n
+*/
 double func_sqrt(double n){
     double sqrt = n / 2;
     double tmp = 0;
@@ -26,6 +32,14 @@ double func_sqrt(double n){
     return sqrt;
 }
 
+/*
+Trouve le cosinus pour la matrice de Givens Gij de la matrice A de taille n*n 
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return un double qui est le cosinus de A pour la matrice de Givens Gij
+*/
 double find_cos(int i, int j, Matrix *A){
     // printf("Aij = %f\n",A->m[i*A->n + j]);
     // printf("Ajj = %f\n",A->m[j*A->n + j]);
@@ -37,6 +51,14 @@ double find_cos(int i, int j, Matrix *A){
         // return A->m[j*A->n + j] / func_sqrt(A->m[j*A->n + j]*A->m[j*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
 }
 
+/*
+Trouve le cosinus pour la matrice de Givens Gij pour la fonction Hessenberg
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return un double qui est le cosinus de A pour la matrice de Givens Gij
+*/
 double find_cos_matrix(int i, int j, Matrix *A){
     if(A->m[(i-1)*A->n + j] == 0 && A->m[i*A->n + j] == 0)
         return 1;
@@ -46,6 +68,14 @@ double find_cos_matrix(int i, int j, Matrix *A){
         // return A->m[j*A->n + j] / func_sqrt(A->m[j*A->n + j]*A->m[j*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
 }
 
+/*
+Trouve le sinus pour la matrice de Givens Gij de la matrice A de taille n*n 
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return un double qui est le sinus de A pour la matrice de Givens Gij
+*/
 double find_sin(int i, int j, Matrix *A){
     // printf("Aij = %f\n",A->m[i*A->n + j]);
     // printf("Ajj = %f\n",A->m[j*A->n + j]);
@@ -57,6 +87,14 @@ double find_sin(int i, int j, Matrix *A){
         // return A->m[i*A->n + j] / func_sqrt(A->m[j*A->n + j]*A->m[j*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
 }
 
+/*
+Trouve le cosinus pour la matrice de Givens Gij pour la fonction Hessenberg
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return un double qui est le cosinus de A pour la matrice de Givens Gij
+*/
 double find_sin_matrix(int i, int j, Matrix *A){
     if(A->m[i*A->n + j] == 0 && A->m[(i-1)*A->n + j] == 0)
         return 1;
@@ -66,6 +104,14 @@ double find_sin_matrix(int i, int j, Matrix *A){
         // return A->m[i*A->n + j] / func_sqrt(A->m[j*A->n + j]*A->m[j*A->n + j] + A->m[i*A->n + j]*A->m[i*A->n + j]);
 }
 
+/*
+Calcul la matrice de Givens Gij de la matrice A de taille n*n 
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return une matrice de taille n*n qui est la matrice de Givens Gij
+*/
 Matrix *givens(int i, int j, Matrix *A){
     Matrix *G = init_eye(A->n);
 
@@ -87,12 +133,17 @@ Matrix *givens(int i, int j, Matrix *A){
 
     // printf("Givens(%d, %d)\n", i+1, j+1);
     // print_matrix(G);
-
     return G;
 }
 
+/*
+Calcul la matrice de Givens Gij de la matrice A de taille n*n pour la fonction Hessenberg
+@param i : un entier
+@param j : un entier
+@param *G : la matrice G, qui est la matrice de Givens Gij
+@param *A : la matrice A
+*/
 void givens_matrix(int i, int j, Matrix *G, Matrix *A){
-    // printf("n%d-j%d-1 = %d\n",A->n, j, k);
     double c = find_cos_matrix(i, j, A);
     double s = find_sin_matrix(i, j, A);
     // printf("c = %f\n", c);
@@ -113,6 +164,12 @@ void givens_matrix(int i, int j, Matrix *G, Matrix *A){
     // print_matrix(G);
 }
 
+/*
+QR decomposition de la matrice A de taille n*n 
+@param *A : la matrice A
+
+@return une structure de type QR qui contient la matrice Q et la matrice R
+*/
 QR *qr_decomposition(Matrix *A){
     QR *qr = (QR *) malloc(sizeof(QR));
     qr->Q = init_eye(A->n);
@@ -121,16 +178,10 @@ QR *qr_decomposition(Matrix *A){
     for(int j = 0 ; j < A->n ; j++){ // From j = 1 to n
         for(int i = j + 1 ; i < A->n ; i++){ // From i = j+1 to m
             Matrix *G = givens(i, j, qr->R);
-            // printf("Givens(%d, %d)\n", i+1, j+1);
-            // print_matrix(G);
 
             qr->R = matrix_mul(G, qr->R);
-            // printf("R = \n");
-            // print_matrix(qr->R);
             Matrix *Gt = matrix_transpose(G);
             qr->Q = matrix_mul(qr->Q, Gt);
-            // printf("Q = \n");
-            // print_matrix(qr->Q);
 
             free_matrix(G);
             free_matrix(Gt);
@@ -139,8 +190,14 @@ QR *qr_decomposition(Matrix *A){
     return qr;
 }
 
+/*
+Calcul une matrice quasi Hessenberg de la matrice A de taille n*n
+@param *A : la matrice A
+
+@return une matrice de taille n*n qui est une matrice quasi Hessenberg
+*/
 Matrix *quasi_hess(Matrix *A){
-    unsigned int i = 0;
+    int i = 0;
     unsigned int cpt = 0;
     
     // Nombre d'iterations max pour la boucle while (pour eviter les boucles infinies)
@@ -148,7 +205,6 @@ Matrix *quasi_hess(Matrix *A){
     
     double threshold = 1e-4;
     // double threshold = 0.5;
-    // printf("threshold = %f\n", threshold);
     
     Matrix *A_prime = copy_matrix(A);
     QR *qr = qr_decomposition(A_prime);
@@ -167,7 +223,6 @@ Matrix *quasi_hess(Matrix *A){
         for(i = 0 ; i < A->n -1 ; i++){
             if(lower_diag[i] > threshold)
                 cpt++;
-            // printf("coef = %f\n", lower_diag[i]);
         }
 
         if(cpt == 0)
@@ -183,7 +238,6 @@ Matrix *quasi_hess(Matrix *A){
         free_matrix(tmp);
 
         qr = qr_decomposition(A_prime);
-        // print_matrix(A_prime);
 
         // Recupere les coefficients de la subdiagonale inferieure
         for(i = 0 ; i < A->n - 1 ; i++)
@@ -196,7 +250,12 @@ Matrix *quasi_hess(Matrix *A){
     return A_prime;
 }
 
+/*
+Calcul la matrice de Hessenberg de la matrice A de taille n*n
+@param *A : la matrice A
 
+@return une matrice de taille n*n qui est une matrice de Hessenberg
+*/
 Matrix *hessenberg(Matrix *A){
     int i = 0;
     int j = 0;
@@ -224,22 +283,14 @@ Matrix *hessenberg(Matrix *A){
     return hess;
 }
 
-double matrix_distance(Matrix *A, Matrix *B){
-    if(A->n != B->n){
-        printf("Error: matrix_distance: A->n != B->n\n");
-        exit(EXIT_FAILURE);
-    }   
+/*
+Calcul les valeurs propres de la matrice A de taille n*n avec la methode QR 
+@param *A : la matrice A
+@param k : nombre d'iterations
 
-    double dist = 0;
-    for(int i = 0 ; i < A->n ; i++){
-        for(int j = 0 ; j < A->n ; j++){
-            dist += abs(A->m[i*A->n + j] - B->m[i*A->n + j]);
-        }
-    }
-    return dist;
-}
-
-double *eigenvalues(Matrix *A){
+@return un tableau de taille n qui contient les valeurs propres de la matrice A
+*/
+double *eigenvalues(Matrix *A, int k){
     double *eigen = (double *) malloc(A->n * sizeof(double));
 
     QR *qr;
@@ -252,19 +303,16 @@ double *eigenvalues(Matrix *A){
     // Mais plus la matrice est grande, plus k doit etre grand (encore plus que pour une petite matrice)
     // Car on fait k fois la decomposition QR sur la matrice A
     // Donc plus A, a de chance de converger vers une matrice diagonale 
-    int k = 20; 
     while(i < k){
         qr = qr_decomposition(A_prime);
         // Matrix *Qt = matrix_transpose(qr->Q);
         // tmp = matrix_mul(A_prime, qr->Q);
         // A_prime = matrix_mul(Qt, tmp);
-
+        // free_matrix(Qt);
+        // free_matrix(tmp);
 
         // Faire RQ revient a faire Q*AR
         A_prime = matrix_mul(qr->R, qr->Q);
-
-        // free_matrix(tmp);
-        // free_matrix(Qt);
         free_qr(qr);
         i++;
     }
@@ -279,6 +327,15 @@ double *eigenvalues(Matrix *A){
 
 /* ***** MPFR ***** */
 
+/*
+Trouve le cosinus pour la matrice de Givens Gij de la matrice A de taille n*n 
+En utilisant la librairie MPFR
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return un double qui est le cosinus de A pour la matrice de Givens Gij
+*/
 void MPFR_find_cos(int i, int j, MPFR_Matrix *A, mpfr cos){
     if(mpfr_cmp_d(A->m[i*A->n + j], 0) == 0 && mpfr_cmp_d(A->m[j*A->n + j], 0) == 0)
         mpset(cos, 1);
@@ -304,6 +361,15 @@ void MPFR_find_cos(int i, int j, MPFR_Matrix *A, mpfr cos){
     }
 }
 
+/*
+Trouve le cosinus pour la matrice de Givens Gij pour la fonction Hessenberg
+En utilisant la librairie MPFR
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return un double qui est le cosinus de A pour la matrice de Givens Gij
+*/
 void MPFR_find_cos_matrix(int i, int j, MPFR_Matrix *A, mpfr cos){
     if(mpfr_cmp_d(A->m[(i-1)*A->n + j], 0) == 0 && mpfr_cmp_d(A->m[i*A->n + j], 0) == 0)
         mpset(cos, 1);
@@ -326,6 +392,15 @@ void MPFR_find_cos_matrix(int i, int j, MPFR_Matrix *A, mpfr cos){
     }
 }
 
+/*
+Trouve le sinus pour la matrice de Givens Gij de la matrice A de taille n*n 
+En utilisant la librairie MPFR
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return un double qui est le sinus de A pour la matrice de Givens Gij
+*/
 void MPFR_find_sin(int i, int j, MPFR_Matrix *A, mpfr sin){
     if(mpfr_cmp_d(A->m[i*A->n + j], 0) == 0 && mpfr_cmp_d(A->m[j*A->n + j], 0) == 0)
         mpset(sin, 1);
@@ -351,6 +426,15 @@ void MPFR_find_sin(int i, int j, MPFR_Matrix *A, mpfr sin){
     }
 }
 
+/*
+Trouve le cosinus pour la matrice de Givens Gij pour la fonction Hessenberg
+En utilisant la librairie MPFR
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return un double qui est le cosinus de A pour la matrice de Givens Gij
+*/
 void MPFR_find_sin_matrix(int i, int j, MPFR_Matrix *A, mpfr sin){
     if(mpfr_cmp_d(A->m[(i-1)*A->n + j], 0) == 0 && mpfr_cmp_d(A->m[i*A->n + j], 0) == 0)
         mpset(sin, 1);
@@ -373,6 +457,15 @@ void MPFR_find_sin_matrix(int i, int j, MPFR_Matrix *A, mpfr sin){
     }
 }
 
+/*
+Calcul la matrice de Givens Gij de la matrice A de taille n*n 
+En utilisant la librairie MPFR
+@param i : un entier
+@param j : un entier
+@param *A : la matrice A
+
+@return une matrice de taille n*n qui est la matrice de Givens Gij
+*/
 MPFR_Matrix *MPFR_givens(int i, int j, MPFR_Matrix *A){
     MPFR_Matrix *G = init_MPFR_eye(A->n);
     mpfr cos, sin, negsin;
@@ -403,6 +496,14 @@ MPFR_Matrix *MPFR_givens(int i, int j, MPFR_Matrix *A){
     return G;
 }
 
+/*
+Calcul la matrice de Givens Gij de la matrice A de taille n*n pour la fonction Hessenberg
+En utilisant la librairie MPFR
+@param i : un entier
+@param j : un entier
+@param *G : la matrice G, qui est la matrice de Givens Gij
+@param *A : la matrice A
+*/
 void MPFR_givens_matrix(int i, int j, MPFR_Matrix *G, MPFR_Matrix *A){
     mpfr cos, sin, negsin; 
 
@@ -430,6 +531,13 @@ void MPFR_givens_matrix(int i, int j, MPFR_Matrix *G, MPFR_Matrix *A){
     mpfr_clear(negsin);
 }
 
+/*
+QR decomposition de la matrice A de taille n*n 
+En utilisant la librairie MPFR
+@param *A : la matrice A
+
+@return une structure de type QR qui contient la matrice Q et la matrice R
+*/
 MPFR_QR *MPFR_qr_decomposition(MPFR_Matrix *A){
     MPFR_QR *qr = (MPFR_QR *) malloc(sizeof(MPFR_QR));
     MPFR_Matrix *G, *Gt;
@@ -458,8 +566,15 @@ MPFR_QR *MPFR_qr_decomposition(MPFR_Matrix *A){
     return qr;
 }
 
+/*
+Calcul une matrice quasi Hessenberg de la matrice A de taille n*n
+En utilisant la librairie MPFR
+@param *A : la matrice A
+
+@return une matrice de taille n*n qui est une matrice quasi Hessenberg
+*/
 MPFR_Matrix *MPFR_quasi_hess(MPFR_Matrix *A){
-    unsigned int i = 0;
+    int i = 0;
     unsigned int cpt = 0;
     
     // Nombre d'iterations max pour la boucle while (pour eviter les boucles infinies)
@@ -518,6 +633,13 @@ MPFR_Matrix *MPFR_quasi_hess(MPFR_Matrix *A){
     return A_prime;
 }
 
+/*
+Calcul la matrice de Hessenberg de la matrice A de taille n*n
+En utilisant la librairie MPFR
+@param *A : la matrice A
+
+@return une matrice de taille n*n qui est une matrice de Hessenberg
+*/
 MPFR_Matrix *MPFR_hessenberg(MPFR_Matrix *A){
     int i = 0;
     int j = 0;
@@ -547,12 +669,19 @@ MPFR_Matrix *MPFR_hessenberg(MPFR_Matrix *A){
     return hess;
 }
 
-void MPFR_eigenvalues(MPFR_Matrix *A, mpfr *eigen){
+/*
+Calcul les valeurs propres de la matrice A de taille n*n avec la methode QR 
+En utilisant la librairie MPFR
+@param *A : la matrice A
+@param k : nombre d'iterations
+
+@return un tableau de taille n qui contient les valeurs propres de la matrice A
+*/
+void MPFR_eigenvalues(MPFR_Matrix *A, mpfr *eigen, int k){
     MPFR_QR *qr;
     MPFR_Matrix *A_prime = copy_MPFR_matrix(A);
 
     int i = 0;
-    int k = 20; 
     while(i < k){
         qr = MPFR_qr_decomposition(A_prime);
 

@@ -1,8 +1,3 @@
-/*
-Tout les calculs sont faites avec la librairie MPFR (Multiple Precision Floating-point Reliable) 
-qui permet de faire des calculs avec des nombres flottants de grande precision.
-*/
-
 #ifndef BASE_H_
 #define BASE_H_
 

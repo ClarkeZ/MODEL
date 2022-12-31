@@ -21,7 +21,10 @@ void test_base(){
 
 /* ---------- TEST MATRIX.C ---------- */
 void test_matrix(int n){
-
+    // Pour éviter les warnings de variables non utilisées
+    n += 1;
+    n -= 1;
+    
     // test_init_matrix(n);
 
     // test_init_eye(n);
@@ -56,6 +59,9 @@ void test_matrix(int n){
 
  /* ---------- TEST ALGO.C ---------- */
 void test_algo(int n){
+    // Pour éviter les warnings de variables non utilisées
+    n += 1;
+    n -= 1;
 
     // test_qr_decomposition(n);
 
@@ -73,5 +79,7 @@ void test_algo(int n){
 
     // test_MPFR_hessenberg(n);
 
-    test_MPFR_eigenvalues(n);
+    // test_MPFR_eigenvalues(n);
 }
+
+
