@@ -296,14 +296,12 @@ double *eigenvalues(Matrix *A, int k){
     QR *qr;
     Matrix *A_prime = copy_matrix(A);
     // Matrix *tmp;
-
-    int i = 0;
     
     // k Nombre d'iterations, plus k est grand, plus la precision est bonne
     // Mais plus la matrice est grande, plus k doit etre grand (encore plus que pour une petite matrice)
     // Car on fait k fois la decomposition QR sur la matrice A
     // Donc plus A, a de chance de converger vers une matrice diagonale 
-    while(i < k){
+    while(k--){
         qr = qr_decomposition(A_prime);
         // Matrix *Qt = matrix_transpose(qr->Q);
         // tmp = matrix_mul(A_prime, qr->Q);
@@ -314,7 +312,6 @@ double *eigenvalues(Matrix *A, int k){
         // Faire RQ revient a faire Q*AR
         A_prime = matrix_mul(qr->R, qr->Q);
         free_qr(qr);
-        i++;
     }
 
     for(int i = 0 ; i < A->n ; i++){
@@ -681,14 +678,11 @@ void MPFR_eigenvalues(MPFR_Matrix *A, mpfr *eigen, int k){
     MPFR_QR *qr;
     MPFR_Matrix *A_prime = copy_MPFR_matrix(A);
 
-    int i = 0;
-    while(i < k){
+    while(k--){
         qr = MPFR_qr_decomposition(A_prime);
-
         A_prime = MPFR_matrix_mul(qr->R, qr->Q);
 
         free_MPFR_qr(qr);
-        i++;
     }
     for(int i = 0 ; i < A->n ; i++){
         mpfr_set(eigen[i], A_prime->m[i*A->n + i], MPFR_RNDN);
