@@ -1,3 +1,14 @@
+Implémentation de différent algorithme appliqué à des matrices à coefficient sur les nombres à virgule flottante double (double précision).
+Ce projet utilise également la librairie MPFR qui signifie "Multiple-Precision Floating-point computations with correct Rounding". Afin de pouvoir comparer les résultats ainsi que la vitesse d'exécution des algorithmes appliqués sur des matrices à coefficients double précision et sur des matrices à coefficients MPFR.
+
+Les algorithmes sont les suivantes :
+ - QR décomposition
+ - Transformation d'une matrice quelconque en une matrice d'Hessenberg
+ - Valeurs propres d'une matrice
+
+
+ 
+
 Ce code marche pour les versions MPFR et GMP suivantes :
 MPFR library: 4.1.0-p13
 MPFR header: 4.1.0-p13 (based on 4.1.0)
